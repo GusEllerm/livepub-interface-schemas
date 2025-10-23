@@ -21,7 +21,7 @@ SSH_HOST ?=
 WEB_ROOT ?= /var/www/livepublication
 
 .PHONY: help init venv install serve serve-bg stop urls test smoke clean superclean
-.PHONY: test-remote smoke-remote deploy-rsync
+.PHONY: test-remote smoke-remote deploy-rsync build-profile check-profile
 
 help:
 	@echo "Targets:"
@@ -114,3 +114,10 @@ deploy-rsync:
 	rsync -av --delete \
 		interface-schemas/ \
 		$(SSH_HOST):$(WEB_ROOT)/interface-schemas/
+
+# --- Profile context management ---
+build-profile:
+	@$(PY) tools/build_profile_context.py
+
+check-profile:
+	@$(PY) tools/build_profile_context.py --check

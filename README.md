@@ -217,9 +217,32 @@ make test-remote BASE_URL=https://livepublication.org/interface-schemas
 
 Expected: All tests green, no broken links, correct MIME types.
 
+## Profile context (lp-dscdpc)
+
+The profile context merges the DPC + DSC module contexts and adds PROV/xsd conveniences (`used`, `generated`, `startedAtTime`, `endedAtTime`). It is generated from the module contexts to avoid drift:
+
+```bash
+# generate/update profile
+make build-profile
+
+# verify the committed profile matches the modules
+make check-profile
+```
+
+Use it in manifests (after RO-Crate contexts if present):
+
+```json
+"@context": [
+  "https://w3id.org/ro/crate/1.1/context",
+  "https://w3id.org/ro/terms/workflow-run/context",
+  "https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
+]
+```
+
 ## Commit
 
 ```bash
 git add .
 git -c user.name="REPLACE_WITH_YOUR_NAME" -c user.email="devnull@example.com" commit -m "feat: local skeleton for DPC/DSC with contexts, TTL, SHACL, dev server, tests"
 ```
+

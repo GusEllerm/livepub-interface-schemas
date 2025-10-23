@@ -9,6 +9,7 @@ def _url(p):  # ensure path starts with /
 
 
 @pytest.mark.parametrize("path,ctype,cache_required", [
+    ("/contexts/lp-dscdpc/v1.jsonld", "application/ld+json", True),
     ("/dpc/contexts/v1.jsonld",  "application/ld+json", True),
     ("/dpc/terms.ttl",          "text/turtle",         False),
     ("/dpc/shapes.ttl",         "text/turtle",         False),

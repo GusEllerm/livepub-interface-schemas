@@ -1,0 +1,37 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema": "https://schema.org/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "dpc": "https://livepublication.org/interface-schemas/dpc#",
+    "HardwareRuntime": "dpc:HardwareRuntime",
+    "HardwareComponent": "dpc:HardwareComponent",
+    "component": {
+      "@id": "dpc:component",
+      "@type": "@id"
+    },
+    "performance": {
+      "@id": "dpc:performance",
+      "@type": "@id"
+    },
+    "startedAtTime": {
+      "@id": "prov:startedAtTime",
+      "@type": "xsd:dateTime"
+    },
+    "dsc": "https://livepublication.org/interface-schemas/dsc#",
+    "DistributedStep": "dsc:DistributedStep",
+    "used": {
+      "@id": "prov:used",
+      "@type": "@id"
+    },
+    "generated": {
+      "@id": "prov:generated",
+      "@type": "@id"
+    },
+    "endedAtTime": {
+      "@id": "prov:endedAtTime",
+      "@type": "xsd:dateTime"
+    }
+  }
+}
