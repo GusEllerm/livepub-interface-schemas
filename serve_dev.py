@@ -7,7 +7,8 @@ mimetypes.add_type('text/turtle', '.ttl')
 class Handler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
-        if re.search(r'/contexts/v\\d+\\.jsonld$', self.path):
+        # Add strong caching for immutable, versioned contexts like /contexts/v1.jsonld
+        if re.search(r'/contexts/v\d+\.jsonld$', self.path):
             self.send_header('Cache-Control', 'public, max-age=31536000, immutable')
         super().end_headers()
 
