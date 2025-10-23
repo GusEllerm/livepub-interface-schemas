@@ -98,7 +98,7 @@ The test suite validates:
    ```bash
    # If you added a new property, update test fixtures
    vim tests/data_dpc.ttl
-   vim tests/sample_dpc.json
+   vim tests/test_json/dpc_min.json
    ```
 
 3. **Run validation**
