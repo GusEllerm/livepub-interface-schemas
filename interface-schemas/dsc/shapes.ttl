@@ -1,0 +1,6 @@
+@prefix sh:  <http://www.w3.org/ns/shacl#> .
+@prefix dsc: <https://livepublication.org/interface-schemas/dsc#> .
+
+dsc:DistributedStepShape
+  a sh:NodeShape ;
+  sh:targetClass dsc:DistributedStep .

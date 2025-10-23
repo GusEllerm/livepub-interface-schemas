@@ -1,0 +1,39 @@
+@prefix dpc:   <https://livepublication.org/interface-schemas/dpc#> .
+@prefix schema:<https://schema.org/> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix vann:  <http://purl.org/vocab/vann/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<https://livepublication.org/interface-schemas/dpc/>
+  a owl:Ontology ;
+  dct:title "Distributed Provenance Crate (DPC) Vocabulary" ;
+  dct:creator "REPLACE_WITH_YOUR_NAME" ;
+  dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  dct:issued "2025-10-24"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  owl:versionInfo "0.1.0" ;
+  vann:preferredNamespacePrefix "dpc" ;
+  vann:preferredNamespaceUri "https://livepublication.org/interface-schemas/dpc#" .
+
+dpc:HardwareRuntime a rdfs:Class ;
+  rdfs:label "Hardware Runtime" ;
+  rdfs:comment "Snapshot of hardware/environment for an executed distributed step." ;
+  rdfs:subClassOf schema:CreativeWork .
+
+dpc:HardwareComponent a rdfs:Class ;
+  rdfs:label "Hardware Component" ;
+  rdfs:comment "A specific component such as CPU, GPU, RAM, NIC, etc." .
+
+dpc:component a rdf:Property ;
+  rdfs:label "component" ;
+  rdfs:comment "Relates a runtime snapshot to its constituent hardware components." ;
+  rdfs:domain dpc:HardwareRuntime ;
+  rdfs:range  dpc:HardwareComponent .
+
+dpc:performance a rdf:Property ;
+  rdfs:label "performance" ;
+  rdfs:comment "Links a hardware component to a performance observation." ;
+  rdfs:domain dpc:HardwareComponent ;
+  rdfs:range  schema:Observation .

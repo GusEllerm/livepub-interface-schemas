@@ -1,0 +1,4 @@
+pyld==2.0.4
+requests>=2.31
+rdflib>=7.0.0
+pyshacl>=0.23.0

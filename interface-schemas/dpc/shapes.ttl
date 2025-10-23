@@ -1,0 +1,11 @@
+@prefix sh:  <http://www.w3.org/ns/shacl#> .
+@prefix dpc: <https://livepublication.org/interface-schemas/dpc#> .
+
+dpc:HardwareRuntimeShape
+  a sh:NodeShape ;
+  sh:targetClass dpc:HardwareRuntime ;
+  sh:property [
+    sh:path dpc:component ;
+    sh:minCount 1 ;
+    sh:message "A HardwareRuntime must have at least one dpc:component." ;
+  ] .

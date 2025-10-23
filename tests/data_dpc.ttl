@@ -1,0 +1,7 @@
+@prefix dpc: <https://livepublication.org/interface-schemas/dpc#> .
+@prefix ex:  <http://example.org/> .
+
+ex:run1 a dpc:HardwareRuntime ;
+  dpc:component ex:gpu0 .
+
+ex:gpu0 a dpc:HardwareComponent .

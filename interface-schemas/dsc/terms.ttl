@@ -1,0 +1,20 @@
+@prefix dsc:   <https://livepublication.org/interface-schemas/dsc#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix vann:  <http://purl.org/vocab/vann/> .
+
+<https://livepublication.org/interface-schemas/dsc/>
+  a owl:Ontology ;
+  dct:title "Distributed Step Crate (DSC) Vocabulary" ;
+  dct:creator "REPLACE_WITH_YOUR_NAME" ;
+  dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  dct:issued "2025-10-24"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  owl:versionInfo "0.1.0" ;
+  vann:preferredNamespacePrefix "dsc" ;
+  vann:preferredNamespaceUri "https://livepublication.org/interface-schemas/dsc#" .
+
+# Placeholder terms; to refine later
+dsc:DistributedStep a rdfs:Class ;
+  rdfs:label "Distributed Step" ;
+  rdfs:comment "A step executed in a distributed WMS context." .

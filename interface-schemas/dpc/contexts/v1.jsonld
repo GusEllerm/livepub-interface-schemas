@@ -1,0 +1,16 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema": "https://schema.org/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "dpc": "https://livepublication.org/interface-schemas/dpc#",
+
+    "HardwareRuntime": "dpc:HardwareRuntime",
+    "HardwareComponent": "dpc:HardwareComponent",
+
+    "component":   { "@id": "dpc:component",   "@type": "@id" },
+    "performance": { "@id": "dpc:performance", "@type": "@id" },
+    "startedAtTime": { "@id": "prov:startedAtTime", "@type": "xsd:dateTime" }
+  }
+}
