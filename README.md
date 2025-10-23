@@ -161,6 +161,35 @@ curl -I http://localhost:8000/interface-schemas/dpc/contexts/v1.jsonld  # Check 
 
 Expected: All tests green, no broken links, correct MIME types.
 
+## Remote validation (staging/prod)
+
+Set `BASE_URL` to your deployed base (e.g., `https://livepublication.org/interface-schemas`) and run:
+
+```bash
+# Quick header checks (no pytest)
+make smoke-remote BASE_URL=https://livepublication.org/interface-schemas
+
+# Full remote test suite (pytest)
+make test-remote BASE_URL=https://livepublication.org/interface-schemas
+```
+
+**Notes:**
+- Remote tests are **skipped** unless `BASE_URL` is set
+- Remote JSON-LD tests perform live expansion/compaction against the deployed context URL
+- Versioned contexts (e.g., `.../v1.jsonld`) must return `Cache-Control: public, max-age=31536000, immutable`
+- Remote tests validate headers, CORS, JSON-LD semantics, and link integrity
+
+**Optional: Deploy helper**
+
+```bash
+# Deploy via rsync (adjust SSH_HOST and WEB_ROOT)
+make deploy-rsync SSH_HOST=user@host WEB_ROOT=/var/www/livepublication
+```
+
+This copies `interface-schemas/` to the remote server. **No web server configuration is modified.**
+
+Expected: All tests green, no broken links, correct MIME types.
+
 ## Commit
 
 ```bash

@@ -15,7 +15,13 @@ DSC_CTX   := $(BASE)/dsc/contexts/v1.jsonld
 DSC_TERMS := $(BASE)/dsc/terms.ttl
 DSC_SHACL := $(BASE)/dsc/shapes.ttl
 
+# --- Remote config (override at call time) ---
+BASE_URL ?=
+SSH_HOST ?=
+WEB_ROOT ?= /var/www/livepublication
+
 .PHONY: help init venv install serve serve-bg stop urls test smoke clean superclean
+.PHONY: test-remote smoke-remote deploy-rsync
 
 help:
 	@echo "Targets:"
@@ -28,6 +34,11 @@ help:
 	@echo "  make smoke       - start server, curl key endpoints, stop server"
 	@echo "  make clean       - remove caches"
 	@echo "  make superclean  - clean + remove venv"
+	@echo ""
+	@echo "Remote targets (require BASE_URL):"
+	@echo "  make test-remote BASE_URL=https://example.org/interface-schemas"
+	@echo "  make smoke-remote BASE_URL=https://example.org/interface-schemas"
+	@echo "  make deploy-rsync SSH_HOST=user@host [WEB_ROOT=/var/www/livepublication]"
 
 # --- Setup ---
 init: venv install
@@ -80,3 +91,26 @@ clean:
 superclean: clean
 	@rm -rf $(VENV)
 	@rm -f .server.pid
+
+# --- Remote validation targets ---
+# Run remote pytest suite (requires BASE_URL)
+test-remote: install
+	@if [ -z "$(BASE_URL)" ]; then echo "Set BASE_URL, e.g. BASE_URL=https://example.org/interface-schemas"; exit 1; fi
+	@BASE_URL=$(BASE_URL) $(PYTEST) -q tests/remote
+
+# Quick header smoke check via curl (no pytest)
+smoke-remote:
+	@if [ -z "$(BASE_URL)" ]; then echo "Set BASE_URL, e.g. BASE_URL=https://example.org/interface-schemas"; exit 1; fi
+	@echo "== HEADERS: DPC context ==" && curl -sI $(BASE_URL)/dpc/contexts/v1.jsonld | sed -n '1,12p'
+	@echo "== HEADERS: DPC terms.ttl ==" && curl -sI $(BASE_URL)/dpc/terms.ttl       | sed -n '1,12p'
+	@echo "== HEADERS: DPC shapes.ttl ==" && curl -sI $(BASE_URL)/dpc/shapes.ttl     | sed -n '1,12p'
+	@echo "== HEADERS: DSC context ==" && curl -sI $(BASE_URL)/dsc/contexts/v1.jsonld | sed -n '1,12p'
+	@echo "== HEADERS: DSC terms.ttl ==" && curl -sI $(BASE_URL)/dsc/terms.ttl         | sed -n '1,12p'
+	@echo "== HEADERS: DSC shapes.ttl ==" && curl -sI $(BASE_URL)/dsc/shapes.ttl       | sed -n '1,12p'
+
+# Optional: static rsync deploy helper (no server config here)
+deploy-rsync:
+	@if [ -z "$(SSH_HOST)" ]; then echo "Set SSH_HOST=user@host"; exit 1; fi
+	rsync -av --delete \
+		interface-schemas/ \
+		$(SSH_HOST):$(WEB_ROOT)/interface-schemas/
