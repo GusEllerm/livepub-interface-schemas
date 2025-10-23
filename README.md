@@ -188,6 +188,33 @@ make deploy-rsync SSH_HOST=user@host WEB_ROOT=/var/www/livepublication
 
 This copies `interface-schemas/` to the remote server. **No web server configuration is modified.**
 
+## Example manifests (DPC/DSC) — add your own
+
+Drop JSON/JSON-LD examples into `tests/test_json/` (recurses into subfolders). The test suite will:
+
+1. **Expand** them using your contexts (local or remote)
+2. **Convert to RDF**
+3. **Validate** against both SHACL shape graphs
+
+### Local run
+
+```bash
+make test
+```
+
+All examples will be validated against the local dev server (fully offline).
+
+### Remote run
+
+```bash
+make test-remote BASE_URL=https://livepublication.org/interface-schemas
+```
+
+**Notes:**
+- To keep local runs offline, examples should reference your contexts under `https://livepublication.org/interface-schemas/...`. The test harness automatically rewrites that base to the local server URL.
+- If you prefer, you can write examples using `${BASE_URL}` placeholders and substitute before committing, but it isn't required.
+- Add as many examples as you want; they'll be auto-discovered and validated.
+
 Expected: All tests green, no broken links, correct MIME types.
 
 ## Commit
