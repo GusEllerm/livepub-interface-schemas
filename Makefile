@@ -21,7 +21,7 @@ SSH_HOST ?=
 WEB_ROOT ?= /var/www/livepublication
 
 .PHONY: help init venv install serve serve-bg stop urls test smoke clean superclean
-.PHONY: test-remote smoke-remote deploy-rsync build-profile check-profile
+.PHONY: test-remote smoke-remote deploy-rsync build-profile check-profile test-online test-offline
 
 help:
 	@echo "Targets:"
@@ -72,6 +72,14 @@ urls:
 # --- Tests ---
 test: install
 	@$(PYTEST) -q
+
+# Explicitly run tests with online RO-Crate fetch
+test-online:
+	@ROCRATE_ONLINE=1 $(PYTEST) -q
+
+# Force offline: use vendored RO-Crate contexts; no internet
+test-offline:
+	@ROCRATE_ONLINE=0 $(PYTEST) -q
 
 # quick manual header smoke test (requires curl)
 smoke: install serve-bg

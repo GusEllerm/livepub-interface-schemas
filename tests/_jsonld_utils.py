@@ -3,34 +3,64 @@ from pyld import jsonld
 
 LIVE_BASE = "https://livepublication.org/interface-schemas"
 
+# Online by default (fetch RO-Crate contexts from w3id). Set ROCRATE_ONLINE=0 to force offline vendor copies.
+ROCRATE_ONLINE = os.getenv("ROCRATE_ONLINE", "1") != "0"
+
+# Allowlist for online fetch
+ROCRATE_ALLOWED = {
+    "https://w3id.org/ro/crate/1.1/context",
+    "https://w3id.org/ro/terms/workflow-run/context",
+}
+
 
 def make_requests_loader(base_override: str):
     """
-    Create a pyld documentLoader that:
-    - Rewrites LIVE_BASE to base_override (local or remote base).
-    - Fetches using requests and returns JSON content for contexts/documents.
-    - Never attempts other network calls unless the URL begins with LIVE_BASE.
-      (Safety: reject non-LIVE_BASE URLs to avoid external fetches in local tests.)
+    Custom documentLoader:
+    - Rewrites LIVE_BASE to base_override (local server or BASE_URL).
+    - For RO-Crate contexts:
+        * If ROCRATE_ONLINE=1 (default): fetch directly from the internet (allowlist).
+        * If ROCRATE_ONLINE=0: rewrite to local vendor copies.
+    - Blocks any other external URLs to keep tests deterministic.
     """
+
+    # Local vendor fallbacks (used only when ROCRATE_ONLINE=0)
+    VENDOR_MAP = {
+        "https://w3id.org/ro/crate/1.1/context": f"{base_override}/vendor/ro-crate/1.1/context.jsonld",
+        "https://w3id.org/ro/terms/workflow-run/context": f"{base_override}/vendor/ro-terms/workflow-run/context.jsonld",
+    }
+
+    cache = {}
+
     def loader(url, options=None):
+        # 1) Rewrite your contexts to the local/remote base
         if url.startswith(LIVE_BASE):
             mapped = url.replace(LIVE_BASE, base_override, 1)
-        else:
-            # Allow file: and http(s) ONLY if it's still under the override base.
-            # For local tests we'll only see LIVE_BASE; for remote tests BASE_URL is used.
-            if base_override and url.startswith(base_override):
-                mapped = url
-            else:
-                raise RuntimeError(f"Blocked external context fetch: {url}")
 
-        r = requests.get(mapped, timeout=10)
-        r.raise_for_status()
-        doc = r.json()
+        # 2) RO-Crate contexts
+        elif url in ROCRATE_ALLOWED:
+            mapped = url if ROCRATE_ONLINE else VENDOR_MAP[url]
+
+        # 3) Block anything else
+        else:
+            raise RuntimeError(f"Blocked external context fetch: {url}")
+
+        if mapped in cache:
+            doc = cache[mapped]
+        else:
+            r = requests.get(mapped, timeout=15)  # requests follows redirects (w3id does 302s)
+            r.raise_for_status()
+            try:
+                doc = r.json()
+            except Exception as e:
+                raise RuntimeError(f"Non-JSON from {mapped}") from e
+            cache[mapped] = doc
+
         return {
             "contextUrl": None,
-            "documentUrl": url,   # keep original
-            "document": doc
+            "documentUrl": url,  # keep the original URL for provenance
+            "document": doc,
         }
+
     return loader
 
 
@@ -40,31 +70,33 @@ def load_json_file(path: str):
 
 
 def expand_with_override(doc: dict, base_override: str):
-    """
-    Expand a JSON-LD document using a custom loader that rewrites LIVE_BASE to base_override.
-    """
     loader = make_requests_loader(base_override)
     return jsonld.expand(doc, options={"documentLoader": loader})
 
 
 def to_rdf_graph_from_jsonld(doc: dict, base_override: str, rdflib_graph):
     """
-    Convert a JSON-LD doc to RDF using rdflib, after expansion via base_override.
-    We compact back with the same context to keep bnodes stable-ish; rdflib parses JSON-LD directly.
+    Let rdflib fetch contexts too, but:
+    - Rewrite LIVE_BASE -> base_override
+    - If offline, rewrite w3id RO-Crate contexts -> local vendor copies
     """
-    # Use rdflib's JSON-LD parser; first ensure any embedded remote contexts are rewritten.
-    # A simple approach is to replace LIVE_BASE -> base_override inside @context if it's a string or list of strings.
     ctx = doc.get("@context")
-    if isinstance(ctx, str) and ctx.startswith(LIVE_BASE):
-        doc["@context"] = ctx.replace(LIVE_BASE, base_override, 1)
-    elif isinstance(ctx, list):
-        new = []
-        for c in ctx:
-            if isinstance(c, str) and c.startswith(LIVE_BASE):
-                new.append(c.replace(LIVE_BASE, base_override, 1))
-            else:
-                new.append(c)
-        doc["@context"] = new
+
+    def rewrite_ctx_item(item):
+        if isinstance(item, str):
+            if item.startswith(LIVE_BASE):
+                return item.replace(LIVE_BASE, base_override, 1)
+            if not ROCRATE_ONLINE:
+                if item == "https://w3id.org/ro/crate/1.1/context":
+                    return f"{base_override}/vendor/ro-crate/1.1/context.jsonld"
+                if item == "https://w3id.org/ro/terms/workflow-run/context":
+                    return f"{base_override}/vendor/ro-terms/workflow-run/context.jsonld"
+        return item
+
+    if isinstance(ctx, list):
+        doc["@context"] = [rewrite_ctx_item(c) for c in ctx]
+    elif isinstance(ctx, str):
+        doc["@context"] = rewrite_ctx_item(ctx)
 
     rdflib_graph.parse(data=json.dumps(doc), format="json-ld")
     return rdflib_graph

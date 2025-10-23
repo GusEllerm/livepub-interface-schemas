@@ -217,6 +217,26 @@ make test-remote BASE_URL=https://livepublication.org/interface-schemas
 
 Expected: All tests green, no broken links, correct MIME types.
 
+## RO-Crate context fetching (online vs offline)
+
+By default, tests fetch the official RO-Crate contexts from w3id.org.
+
+- Online (default):
+
+```bash
+make test-online   # or just: make test
+```
+
+- Offline (uses local vendor copies):
+
+```bash
+make test-offline
+```
+
+Toggle is controlled by the ROCRATE_ONLINE env var (1 = online, 0 = offline).
+In both modes, our own contexts under https://livepublication.org/interface-schemas/...
+are rewritten to the local dev server (or BASE_URL for remote tests).
+
 ## Profile context (lp-dscdpc)
 
 The profile context merges the DPC + DSC module contexts and adds PROV/xsd conveniences (`used`, `generated`, `startedAtTime`, `endedAtTime`). It is generated from the module contexts to avoid drift:
