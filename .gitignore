@@ -1,6 +1,42 @@
+# Python
 .venv/
+venv/
 __pycache__/
 *.pyc
-.server.pid
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Testing & Coverage
 .pytest_cache/
+.tox/
+.coverage
+htmlcov/
+
+# Project artifacts
+.server.pid
 .artifacts/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment & Secrets
+.env
+.env.local
+*.key
+*.pem
+credentials.json
+secrets.json
+
+# OS
+Thumbs.db
