@@ -26,9 +26,8 @@ def test_all_examples_validate_shacl_locally(server_base):
     dsc_shapes = Graph().parse(f"{base}/dsc/shapes.ttl")
 
     for path in EXAMPLES:
-        g = Graph()
         doc = load_json_file(path)
-        to_rdf_graph_from_jsonld(doc, base_override=base, rdflib_graph=g)
+        g = to_rdf_graph_from_jsonld(doc, base_override=base)
 
         # Validate against both shape graphs; only targeted classes will be checked
         conforms1, _, rep1 = validate(g, shacl_graph=dpc_shapes, inference='rdfs', debug=False)

@@ -1,5 +1,6 @@
 import json, os, requests
 from pyld import jsonld
+from rdflib import Dataset, Graph
 
 LIVE_BASE = "https://livepublication.org/interface-schemas"
 
@@ -40,6 +41,10 @@ def make_requests_loader(base_override: str):
         elif url in ROCRATE_ALLOWED:
             mapped = url if ROCRATE_ONLINE else VENDOR_MAP[url]
 
+        # 2b) Allow direct fetches under the override base (localhost server or remote BASE_URL)
+        elif base_override and url.startswith(base_override):
+            mapped = url
+
         # 3) Block anything else
         else:
             raise RuntimeError(f"Blocked external context fetch: {url}")
@@ -74,12 +79,16 @@ def expand_with_override(doc: dict, base_override: str):
     return jsonld.expand(doc, options={"documentLoader": loader})
 
 
-def to_rdf_graph_from_jsonld(doc: dict, base_override: str, rdflib_graph):
+def to_rdf_graph_from_jsonld(doc: dict, base_override: str, rdflib_graph=None):
     """
-    Let rdflib fetch contexts too, but:
-    - Rewrite LIVE_BASE -> base_override
-    - If offline, rewrite w3id RO-Crate contexts -> local vendor copies
+    Parse JSON-LD into an rdflib Dataset (avoids ConjunctiveGraph deprecation),
+    then merge all quads into a plain Graph for SHACL validation.
+
+    NOTE: This flattens named-graph boundaries. If we later need NG-aware logic,
+    we'll keep the Dataset and adapt validation accordingly. Current shapes
+    do not rely on named graphs, so this is safe.
     """
+    # --- keep the existing @context rewrite logic (LIVE_BASE/ROCRATE_ONLINE) ---
     ctx = doc.get("@context")
 
     def rewrite_ctx_item(item):
@@ -98,5 +107,12 @@ def to_rdf_graph_from_jsonld(doc: dict, base_override: str, rdflib_graph):
     elif isinstance(ctx, str):
         doc["@context"] = rewrite_ctx_item(ctx)
 
-    rdflib_graph.parse(data=json.dumps(doc), format="json-ld")
-    return rdflib_graph
+    # Prefer avoiding rdflib's JSON-LD parser to eliminate ConjunctiveGraph warnings.
+    # Use pyld to produce N-Quads, then load via rdflib's nquads parser.
+    loader = make_requests_loader(base_override)
+    expanded = jsonld.expand(doc, options={"documentLoader": loader})
+    nquads = jsonld.to_rdf(expanded, options={"format": "application/n-quads"})
+
+    g = Graph()
+    g.parse(data=nquads, format="nquads")
+    return g
