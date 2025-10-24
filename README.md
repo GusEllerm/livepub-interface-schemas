@@ -277,7 +277,120 @@ Debugging expansion:
 make debug-nq FILE=tests/crates/valid/dsc_min.json
 ```
 
+Vocabulary audit (see what terms/namespaces are actually used):
+
+```bash
+make audit-vocab         # online (fetches RO-Crate contexts)
+make audit-vocab-offline # offline (vendored contexts)
+```
+
+The audit produces a JSON report at `.artifacts/vocab_inventory.json` with:
+- Predicate and class counts by namespace
+- Top terms used across all crates
+- Literal datatype distribution (XSD types)
+- Any `http://schema.org/*` predicates (should be zero for valid crates)
+- Unknown namespaces not in the allowlist
+
+The audit also runs a contract test on valid crates to ensure:
+- No `http://schema.org/*` predicates (HTTPS only)
+- Native XSD types present for booleans/numbers
+
 > The suite enforces no examples under `tests/test_json/` (a guard test will fail if any remain).
+
+## Vocabulary audit
+
+The vocabulary audit system inventories and validates term usage across all crates, answering: *"What vocabularies and terms are actually used, and are they aligned with policy?"*
+
+### Running the audit
+
+```bash
+make audit-vocab         # online (fetches RO-Crate contexts)
+make audit-vocab-offline # offline (vendored contexts)
+```
+
+### What it produces
+
+A JSON report at `.artifacts/vocab_inventory.json` containing:
+
+- **by_namespace**: Predicate counts per namespace (e.g., 1,423 Schema.org predicates, 31 DPC, 14 DC Terms)
+- **by_term**: Top 100 terms by usage (e.g., `schema:name`: 439, `schema:value`: 338, `schema:additionalProperty`: 330)
+- **classes_by_namespace**: Class counts by namespace
+- **literal_types**: Literal datatype distribution (e.g., 18 `xsd:integer`, 17 `xsd:double`, 6 `xsd:boolean`)
+- **http_schema_terms**: Any `http://schema.org/*` predicates found (should be empty for valid crates)
+- **unknown_namespaces**: Namespaces not in the allowlist (should be empty)
+
+### Contract checks (enforced on valid crates)
+
+The audit includes a contract test (`test_valid_crates_vocab_contract`) that **fails** if:
+
+1. Any `http://schema.org/*` predicates are found (must use HTTPS)
+2. No native XSD types are present for booleans/numbers
+
+### Current inventory snapshot
+
+Based on the latest audit of `tests/crates/{valid,invalid}`:
+
+**Top 5 namespaces:**
+1. `https://schema.org/`: 1,423 predicates ✓
+2. `http://www.w3.org/1999/02/22-rdf-syntax-ns#`: 507 (rdf:type)
+3. `https://livepublication.org/interface-schemas/dpc#`: 31
+4. `http://purl.org/dc/terms/`: 14 (conformsTo)
+5. `https://w3id.org/ro/terms/workflow-run#`: 12
+
+**Top 10 terms:**
+1. `rdf:type`: 507
+2. `schema:name`: 439
+3. `schema:value`: 338
+4. `schema:additionalProperty`: 330
+5. `schema:hasPart`: 53
+6. `schema:encodingFormat`: 29
+7. `schema:description`: 28
+8. `dpc:component`: 24
+9. `schema:object`: 15
+10. `dcterms:conformsTo`: 14
+
+**Literal types (native XSD):**
+- `xsd:integer`: 18
+- `xsd:double`: 17
+- `xsd:boolean`: 6
+- `xsd:date`: 6
+- `xsd:dateTime`: 2
+
+**Contract status:**
+- ✅ Zero `http://schema.org/*` predicates
+- ✅ Native XSD types present
+- ✅ All namespaces recognized
+
+### Allowed namespaces
+
+The audit allows predicates from these namespaces:
+
+- `https://schema.org/` (must be HTTPS)
+- `http://www.w3.org/ns/prov#` (W3C PROV is HTTP)
+- `http://www.w3.org/1999/02/22-rdf-syntax-ns#` (RDF)
+- `http://www.w3.org/2000/01/rdf-schema#` (RDFS)
+- `http://www.w3.org/2001/XMLSchema#` (XSD datatypes)
+- `https://w3id.org/ro/crate/1.1/` (RO-Crate)
+- `https://w3id.org/ro/terms/workflow-run#` (Workflow-run)
+- `https://livepublication.org/interface-schemas/dpc#` (DPC vocabulary)
+- `https://livepublication.org/interface-schemas/dsc#` (DSC vocabulary)
+- `http://purl.org/dc/terms/` (Dublin Core Terms)
+- `https://bioschemas.org/` (Bioschemas)
+
+Any other namespace triggers a warning in the report.
+
+### HTTPS enforcement
+
+The profile context (`lp-dscdpc/v1.jsonld`) explicitly overrides 23+ RO-Crate terms to force HTTPS Schema.org IRIs:
+
+```
+about, actionStatus, additionalType, agent, alternateName, applicationCategory,
+contentSize, datePublished, email, encodingFormat, endTime, exampleOfWork,
+familyName, givenName, instrument, license, mainEntity, programmingLanguage,
+startTime, url, version, workExample, etc.
+```
+
+This ensures consistency: even when RO-Crate contexts expand terms to `http://schema.org/*`, our profile re-maps them to `https://schema.org/*`.
 
 ## JSON-LD → RDF pipeline
 
@@ -354,6 +467,157 @@ Example:
   "object": {"@id": "#input.txt"},
   "result": {"@id": "#output.txt"}
 }
+```
+
+## Diagnostics & audits
+
+The repository includes comprehensive diagnostic tools to track vocabulary usage, enforce policy, and monitor drift over time.
+
+### Quick reference
+
+```bash
+make audit-vocab         # Vocabulary inventory (global + per-file)
+make audit-vocab-offline # Offline mode (vendored contexts)
+make audit-sparql        # SPARQL policy checks (fails on violations)
+make audit-shapes        # SHACL shape coverage report
+make coverage-all        # Run all diagnostic audits
+```
+
+All artifacts land in `.artifacts/` (git-ignored).
+
+### 1. Vocabulary inventory (non-failing)
+
+**What it does:**
+- Walks all crates under `tests/crates/{valid,invalid}`
+- Expands JSON-LD and converts to RDF
+- Produces detailed vocabulary statistics
+
+**Artifacts:**
+- `.artifacts/vocab_inventory.json` — Global aggregates:
+  - `by_namespace`: Predicate counts per namespace
+  - `by_term`: Top 100 terms by usage
+  - `classes_by_namespace`: Class usage
+  - `literal_types`: XSD datatype distribution
+  - `http_schema_terms`: HTTP schema.org violations (should be empty)
+  - `unknown_namespaces`: Unrecognized namespaces
+
+- `.artifacts/vocab_by_file.json` — Per-file breakdown of the above
+
+**Run:**
+```bash
+make audit-vocab         # Online (fetches RO-Crate contexts)
+make audit-vocab-offline # Offline (vendored contexts)
+```
+
+### 2. SPARQL policy checks (failing)
+
+**What it does:**
+- Runs ASK queries from `tests/policy/queries/` against valid crates
+- Enforces crisp policy rules with clear failure messages
+
+**Current policies:**
+1. **no_http_schema_org.rq** — No `http://schema.org/*` predicates (HTTPS only)
+2. **distributed_step_io.rq** — DistributedStep must have `schema:object` or `schema:result`
+3. **control_action_target.rq** — ControlAction must target a DistributedStep
+4. **requires_subscription_boolean.rq** — `schema:requiresSubscription` must be `xsd:boolean`
+5. **content_size_integer.rq** — `schema:contentSize` must be `xsd:integer`
+6. **date_time_types.rq** — Date/time properties must use `xsd:date` or `xsd:dateTime`
+
+**Run:**
+```bash
+make audit-sparql
+```
+
+**Failure example:**
+```
+[SPARQL POLICY] requires_subscription_boolean failed for 2 crate(s):
+  File: tests/crates/valid/dsc_full_02.json
+    s=http://localhost:.../node v=False
+```
+
+**Adding new policies:**
+1. Create a `.rq` file under `tests/policy/queries/`
+2. Write an ASK query that returns `true` when the policy is violated
+3. Run `make audit-sparql` to validate
+
+### 3. SHACL shape coverage (non-failing)
+
+**What it does:**
+- Validates all valid crates with SHACL
+- Tracks which shapes are actually exercised
+- Identifies shapes with zero coverage (dead or over-narrow shapes)
+
+**Artifact:**
+- `.artifacts/shapes_coverage.json` — Per-shape statistics:
+  - `files`: Which crates exercise the shape
+  - `total_nodes`: Number of nodes validated
+  - `total_violations`: Number of violations found
+  - `example_nodes`: Sample node IRIs
+
+**Run:**
+```bash
+make audit-shapes
+```
+
+**Output:**
+```
+[COVERAGE] Total shapes defined: 15
+[COVERAGE] Shapes exercised: 12
+[COVERAGE] Zero-coverage shapes: 3
+  - http://example.org/shapes#UnusedShape
+  - ...
+```
+
+### 4. Vocabulary baseline drift (failing)
+
+**What it does:**
+- Compares current vocabulary against committed baseline
+- Catches unexpected namespace/term changes
+- Enforces stability for critical terms
+
+**Baseline:**
+- `tests/fixtures/vocab_baseline.json` (committed)
+- Generated from current crates; reviewed and committed
+
+**Run:**
+```bash
+pytest tests/test_vocab_baseline.py
+```
+
+**Failure conditions:**
+- New namespaces appear (not in allowlist)
+- `http://schema.org/*` reappears
+- Critical terms disappear or change >20%
+
+**Update baseline:**
+```bash
+VOCAB_BASELINE_UPDATE=1 pytest tests/test_vocab_baseline.py
+git diff tests/fixtures/vocab_baseline.json  # Review changes
+git add tests/fixtures/vocab_baseline.json
+git commit -m "chore: update vocab baseline"
+```
+
+### Running diagnostics offline
+
+All audit targets support offline mode (vendored RO-Crate contexts):
+
+```bash
+ROCRATE_ONLINE=0 make audit-vocab
+ROCRATE_ONLINE=0 make audit-sparql
+ROCRATE_ONLINE=0 make coverage-all
+```
+
+### CI integration
+
+**Diagnostics job (non-blocking):**
+```yaml
+- make coverage-all
+```
+
+**Required checks (blocking):**
+```yaml
+- make audit-sparql  # Enforce policy violations
+- pytest tests/test_vocab_baseline.py  # Catch drift
 ```
 
 ## Commit

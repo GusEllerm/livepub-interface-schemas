@@ -1,0 +1,9 @@
+# ControlAction must target a DistributedStep
+PREFIX schema: <https://schema.org/>
+PREFIX dsc: <https://livepublication.org/interface-schemas/dsc#>
+
+ASK WHERE {
+  ?action a schema:ControlAction ;
+          schema:object ?obj .
+  FILTER NOT EXISTS { ?obj a dsc:DistributedStep }
+}

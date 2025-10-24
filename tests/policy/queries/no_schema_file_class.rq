@@ -1,0 +1,11 @@
+# POLICY: Forbid schema:File class instances
+#
+# RO-Crate semantics: "@type": "File" should expand to schema:MediaObject,
+# never to schema:File. This policy catches any regressions in context
+# mapping that allow schema:File to appear in the graph.
+#
+# VIOLATION: Returns TRUE (fails) if any entity has @type schema:File
+
+ASK WHERE {
+  ?s a <https://schema.org/File> .
+}

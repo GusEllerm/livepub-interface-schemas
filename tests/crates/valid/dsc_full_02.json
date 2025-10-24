@@ -69,7 +69,7 @@
             "object": {
                 "@id": "9e547861-e3c3-4f26-8e7e-91c7c4a0a557"
             },
-            "requiresSubscription": "False",
+            "requiresSubscription": false,
             "result": {
                 "@id": "ffb16e21-03a1-4513-a098-88a75ca6e756"
             },
@@ -80,7 +80,8 @@
         {
             "@id": "#d599d09a-cda6-450e-9926-1ee9e53b0e91",
             "@type": "HowToStep",
-            "position": "88102f1e-8d80-43c8-ab8b-6006458475f3",
+            "position": 1,
+            "identifier": "88102f1e-8d80-43c8-ab8b-6006458475f3",
             "sourceOrganization": {
                 "@id": "#32d51d3a-26dd-4372-a970-28708be587fd"
             }

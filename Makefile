@@ -4,7 +4,7 @@ PORT      ?= 8000
 ROOT      ?= .
 VENV      ?= .venv
 PIP       := $(VENV)/bin/pip
-PYTEST    := $(VENV)/bin/pytest
+PYTEST    := $(PY) -m pytest
 
 # --- Convenience URLs (used by `urls` and `smoke`) ---
 BASE      := http://localhost:$(PORT)/interface-schemas
@@ -22,7 +22,8 @@ WEB_ROOT ?= /var/www/livepublication
 
 .PHONY: help init venv install serve serve-bg stop urls test smoke clean superclean
 .PHONY: test-remote smoke-remote deploy-rsync build-profile check-profile test-online test-offline
-.PHONY: test-crates test-policy debug-nq
+.PHONY: test-crates test-policy debug-nq audit-vocab audit-vocab-offline
+.PHONY: audit-sparql audit-shapes coverage-all
 
 help:
 	@echo "Targets:"
@@ -144,3 +145,26 @@ test-crates:
 .PHONY: test-policy
 test-policy:
 	@$(PYTEST) -q tests/test_policy.py
+
+.PHONY: audit-vocab
+audit-vocab: install
+	@$(PYTEST) -q tests/test_vocab_audit.py::test_vocab_inventory_report
+	@echo "Wrote .artifacts/vocab_inventory.json and vocab_by_file.json"
+
+.PHONY: audit-vocab-offline
+audit-vocab-offline: install
+	@ROCRATE_ONLINE=0 $(PYTEST) -q tests/test_vocab_audit.py::test_vocab_inventory_report
+	@echo "Wrote .artifacts/vocab_inventory.json and vocab_by_file.json (offline)"
+
+.PHONY: audit-sparql
+audit-sparql: install
+	@$(PYTEST) -q tests/policy/test_vocab_sparql.py
+
+.PHONY: audit-shapes
+audit-shapes: install
+	@$(PYTEST) -q tests/test_shapes_coverage.py
+	@echo "Wrote .artifacts/shapes_coverage.json"
+
+.PHONY: coverage-all
+coverage-all: audit-vocab audit-sparql audit-shapes
+	@echo "All diagnostic audits complete"

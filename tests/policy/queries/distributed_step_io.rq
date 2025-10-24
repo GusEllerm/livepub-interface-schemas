@@ -1,0 +1,10 @@
+# DistributedStep must have schema:object or schema:result (normative I/O)
+# PROV used/generated alone is not sufficient
+PREFIX dsc: <https://livepublication.org/interface-schemas/dsc#>
+PREFIX schema: <https://schema.org/>
+
+ASK WHERE {
+  ?step a dsc:DistributedStep .
+  FILTER NOT EXISTS { ?step schema:object ?x }
+  FILTER NOT EXISTS { ?step schema:result ?y }
+}

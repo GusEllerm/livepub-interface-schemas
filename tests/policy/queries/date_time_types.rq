@@ -1,0 +1,20 @@
+# Date/time properties must use xsd:date or xsd:dateTime
+PREFIX schema: <https://schema.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ASK WHERE {
+  {
+    ?s schema:datePublished ?v .
+    FILTER(DATATYPE(?v) != xsd:date && DATATYPE(?v) != xsd:dateTime)
+  }
+  UNION
+  {
+    ?s schema:startTime ?v .
+    FILTER(DATATYPE(?v) != xsd:date && DATATYPE(?v) != xsd:dateTime)
+  }
+  UNION
+  {
+    ?s schema:endTime ?v .
+    FILTER(DATATYPE(?v) != xsd:date && DATATYPE(?v) != xsd:dateTime)
+  }
+}

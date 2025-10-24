@@ -1,0 +1,6 @@
+# No HTTP Schema.org predicates allowed
+# All schema.org terms must use HTTPS
+ASK WHERE {
+  ?s ?p ?o .
+  FILTER(STRSTARTS(STR(?p), "http://schema.org/"))
+}

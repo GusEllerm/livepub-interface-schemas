@@ -1,0 +1,8 @@
+# schema:contentSize must be xsd:integer
+PREFIX schema: <https://schema.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ASK WHERE {
+  ?s schema:contentSize ?v .
+  FILTER(DATATYPE(?v) != xsd:integer)
+}

@@ -1,0 +1,8 @@
+# schema:requiresSubscription must be xsd:boolean
+PREFIX schema: <https://schema.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ASK WHERE {
+  ?s schema:requiresSubscription ?v .
+  FILTER(DATATYPE(?v) != xsd:boolean)
+}

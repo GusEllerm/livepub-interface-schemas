@@ -35,6 +35,31 @@ SCHEMA_BLOCK = {
     # I/O terms (CreateAction-aligned)
     "object": {"@id": "schema:object", "@type": "@id"},
     "result": {"@id": "schema:result", "@type": "@id"},
+    # RO-Crate terms that expand to HTTP in the upstream context
+    "File": "https://schema.org/MediaObject",  # RO-Crate maps File→MediaObject; ensure HTTPS
+    "about": {"@id": "schema:about", "@type": "@id"},
+    "actionStatus": "schema:actionStatus",
+    "additionalType": "schema:additionalType",
+    "agent": {"@id": "schema:agent", "@type": "@id"},
+    "alternateName": "schema:alternateName",
+    "applicationCategory": "schema:applicationCategory",
+    "contentSize": "schema:contentSize",
+    "datePublished": {"@id": "schema:datePublished", "@type": "xsd:date"},
+    "email": "schema:email",
+    "encodingFormat": "schema:encodingFormat",
+    "endTime": {"@id": "schema:endTime", "@type": "xsd:dateTime"},
+    "exampleOfWork": {"@id": "schema:exampleOfWork", "@type": "@id"},
+    "familyName": "schema:familyName",
+    "free": "schema:free",
+    "givenName": "schema:givenName",
+    "instrument": {"@id": "schema:instrument", "@type": "@id"},
+    "license": {"@id": "schema:license", "@type": "@id"},
+    "mainEntity": {"@id": "schema:mainEntity", "@type": "@id"},
+    "programmingLanguage": {"@id": "schema:programmingLanguage", "@type": "@id"},
+    "startTime": {"@id": "schema:startTime", "@type": "xsd:dateTime"},
+    "url": {"@id": "schema:url", "@type": "@id"},
+    "version": "schema:version",
+    "workExample": {"@id": "schema:workExample", "@type": "@id"},
 }
 
 PROV_BLOCK = {
