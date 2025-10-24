@@ -15,25 +15,40 @@ make serve   # Start dev server (foreground)
 ```
 interface-schemas/
 ├── dpc/
-│   ├── index.html           # DPC landing page
-│   ├── terms.ttl            # DPC vocabulary (Turtle)
-│   ├── shapes.ttl           # DPC SHACL shapes
+│   ├── index.html                # DPC landing page
+│   ├── terms.ttl                 # DPC vocabulary (Turtle)
+│   ├── shapes.ttl                # DPC SHACL shapes
 │   └── contexts/
-│       └── v1.jsonld        # DPC JSON-LD context v1 (immutable)
+│       └── v1.jsonld             # DPC JSON-LD context v1 (immutable)
 ├── dsc/
-│   ├── index.html           # DSC landing page
-│   ├── terms.ttl            # DSC vocabulary (Turtle)
-│   ├── shapes.ttl           # DSC SHACL shapes
+│   ├── index.html                # DSC landing page
+│   ├── terms.ttl                 # DSC vocabulary (Turtle)
+│   ├── shapes.ttl                # DSC SHACL shapes
 │   └── contexts/
-│       └── v1.jsonld        # DSC JSON-LD context v1 (immutable)
-└── index.html               # Catalog page
+│       └── v1.jsonld             # DSC JSON-LD context v1 (immutable)
+├── contexts/
+│   └── lp-dscdpc/
+│       └── v1.jsonld             # Profile context (merged DPC+DSC)
+├── vendor/                       # Vendored contexts for offline tests
+│   ├── ro-crate/1.1/context.jsonld
+│   └── ro-terms/workflow-run/context.jsonld
+├── index.html                    # Catalog page
+└── ...
+
 tests/
-├── conftest.py              # Pytest fixture (auto-starts server)
-├── test_headers.py          # MIME, CORS, Cache-Control checks
-├── test_jsonld_roundtrip.py # JSON-LD expand/compact validation
-├── test_turtle_parses.py    # TTL parsing + ontology sanity checks
-├── test_shacl.py            # SHACL validation
-└── test_html_links.py       # Link resolution checks
+├── crates/
+│   ├── valid/                    # Example crates that MUST conform
+│   └── invalid/                  # Example crates that MUST violate
+├── _example_loader.py            # Centralized example discovery
+└── _jsonld_utils.py              # Expansion and loader helpers
+
+tools/
+├── build_profile_context.py      # Generate merged profile context
+└── dump_nquads.py                # Debug helper: JSON-LD → N-Quads
+
+Makefile                          # Dev, test, and helper targets
+serve_dev.py                      # Minimal static server for local dev
+requirements-dev.txt              # Dev/test dependencies
 ```
 
 ## Run dev server
@@ -45,6 +60,7 @@ pip install -r requirements-dev.txt
 ```
 
 Visit:
+
 - http://localhost:8000/interface-schemas/dpc/contexts/v1.jsonld
 - http://localhost:8000/interface-schemas/dpc/terms.ttl
 - http://localhost:8000/interface-schemas/dpc/shapes.ttl
@@ -58,6 +74,7 @@ pytest -q
 ```
 
 The test suite validates:
+
 - ✅ HTTP 200s for all artifacts
 - ✅ Correct MIME types (`application/ld+json`, `text/turtle`, `text/html`)
 - ✅ CORS headers (`Access-Control-Allow-Origin: *`)
@@ -89,54 +106,55 @@ The test suite validates:
 ### Workflow
 
 1. **Edit the artifact**
+
    ```bash
    # Example: Add a new class to DPC
    vim interface-schemas/dpc/terms.ttl
    ```
-
 2. **Update test data** (if applicable)
+
    ```bash
    # If you added a new property, update test fixtures
    vim tests/data_dpc.ttl
    vim tests/test_json/dpc_min.json
    ```
-
 3. **Run validation**
+
    ```bash
    make test
    ```
-   
+
    If tests fail:
+
    - Check TTL syntax: `make serve` then visit the `.ttl` file
    - Check JSON-LD: `python -m json.tool interface-schemas/dpc/contexts/v1.jsonld`
    - Review test output for specific assertion failures
-
 4. **Update SHACL shapes** (if vocabulary changed)
+
    ```bash
    vim interface-schemas/dpc/shapes.ttl
    # Add constraints for new properties/classes
    make test  # Re-validate
    ```
-
 5. **Version contexts** (for breaking changes only)
-   
+
    **Important**: Existing versioned contexts (e.g., `v1.jsonld`) are **immutable** once published. If you must make a breaking change:
-   
+
    ```bash
    # Create a new version
    cp interface-schemas/dpc/contexts/v1.jsonld interface-schemas/dpc/contexts/v2.jsonld
    vim interface-schemas/dpc/contexts/v2.jsonld  # Make changes
-   
+
    # Update index.html to reference v2
    vim interface-schemas/dpc/index.html
-   
+
    # Update tests to use v2 (or add parallel tests)
    vim tests/test_jsonld_roundtrip.py
-   
+
    make test  # Validate
    ```
-
 6. **Commit changes**
+
    ```bash
    git add interface-schemas/ tests/
    git commit -m "feat(dpc): add NewClass and newProperty to vocabulary"
@@ -174,6 +192,7 @@ make test-remote BASE_URL=https://livepublication.org/interface-schemas
 ```
 
 **Notes:**
+
 - Remote tests are **skipped** unless `BASE_URL` is set
 - Remote JSON-LD tests perform live expansion/compaction against the deployed context URL
 - Versioned contexts (e.g., `.../v1.jsonld`) must return `Cache-Control: public, max-age=31536000, immutable`
@@ -188,34 +207,77 @@ make deploy-rsync SSH_HOST=user@host WEB_ROOT=/var/www/livepublication
 
 This copies `interface-schemas/` to the remote server. **No web server configuration is modified.**
 
-## Example manifests (DPC/DSC) — add your own
+## Example crates: structure & conventions
 
-Drop JSON/JSON-LD examples into `tests/test_json/` (recurses into subfolders). The test suite will:
+All JSON/JSON-LD examples live under:
 
-1. **Expand** them using your contexts (local or remote)
-2. **Convert to RDF**
-3. **Validate** against both SHACL shape graphs
-
-### Local run
-
-```bash
-make test
+```
+tests/crates/
+   valid/    # MUST conform to SHACL
+   invalid/  # MUST violate (ideally one focused violation per file)
 ```
 
-All examples will be validated against the local dev server (fully offline).
+### Requirements for valid crates
 
-### Remote run
+- Contexts: include RO-Crate and the profile.
+
+  - Always: `https://w3id.org/ro/crate/1.1/context`
+  - Always: `https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld`
+  - Optional when applicable: `https://w3id.org/ro/terms/workflow-run/context`
+
+  Example:
+
+  ```json
+  {
+     "@context": [
+        "https://w3id.org/ro/crate/1.1/context",
+        "https://w3id.org/ro/terms/workflow-run/context",
+        "https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
+     ]
+  }
+  ```
+- DistributedStep I/O (normative): use Schema.org
+
+  - `object` (input) and/or `result` (output) — at least one is required.
+  - `prov:used`/`prov:generated` are optional/legacy and do not satisfy conformance by themselves.
+- Runtime linking: `schema:hasPart` points to a `dpc:HardwareRuntime` with ≥1 `dpc:component`.
+- Hardware metrics: use `schema:additionalProperty` with `schema:PropertyValue { name, value }`.
+- HowToStep: `schema:position` is an integer; `schema:identifier` optional (string).
+- HTTPS only: profile ensures `https://schema.org/...`; tests fail if `http://schema.org/...` appears.
+
+### Requirements for invalid crates
+
+Put targeted counter-examples in `tests/crates/invalid/`, each demonstrating one clear violation (e.g., missing `object/result`, wrong datatype for `position`, `HardwareRuntime` without `component`, raw hardware keys instead of `additionalProperty`, etc.).
+
+### Running tests
+
+Local (RO-Crate contexts fetched online by default):
+
+```bash
+make test          # full suite
+make test-crates   # conformance only
+make test-policy   # profile/targets checks
+```
+
+Offline (vendored RO-Crate contexts):
+
+```bash
+make test-offline
+```
+
+Remote/staging validation (after deploy):
 
 ```bash
 make test-remote BASE_URL=https://livepublication.org/interface-schemas
 ```
 
-**Notes:**
-- To keep local runs offline, examples should reference your contexts under `https://livepublication.org/interface-schemas/...`. The test harness automatically rewrites that base to the local server URL.
-- If you prefer, you can write examples using `${BASE_URL}` placeholders and substitute before committing, but it isn't required.
-- Add as many examples as you want; they'll be auto-discovered and validated.
+Debugging expansion:
 
-Expected: All tests green, no broken links, correct MIME types.
+```bash
+make debug-nq FILE=tests/crates/valid/dsc_min.json
+```
+
+> The suite enforces no examples under `tests/test_json/` (a guard test will fail if any remain).
 
 ## JSON-LD → RDF pipeline
 
@@ -300,4 +362,3 @@ Example:
 git add .
 git -c user.name="REPLACE_WITH_YOUR_NAME" -c user.email="devnull@example.com" commit -m "feat: local skeleton for DPC/DSC with contexts, TTL, SHACL, dev server, tests"
 ```
-

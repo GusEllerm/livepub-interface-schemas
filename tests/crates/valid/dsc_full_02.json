@@ -47,6 +47,12 @@
             "name": "CPU usage"
         },
         {
+            "@id": "3e1d8118-cf5d-4549-b0f4-41f831389205",
+            "@type": "File",
+            "encodingFormat": "json",
+            "name": "CPU usage"
+        },
+        {
             "@id": "2753cdea-1429-4172-b0d5-c63e95b2ce6b",
             "name": "Distributed Step Crate",
             "@type": [
@@ -133,6 +139,8 @@
             "maxValue": 0.0,
             "measurementTechnique": "Psutil.cpu_percent polled at 0.05",
             "minValue": 0.0,
+            "value": 0.0,
+            "valueReference": { "@id": "3e1d8118-cf5d-4549-b0f4-41f831389205" },
             "observationAbout": {
                 "@id": "#403381b5-2242-4099-9589-a50d557eba80"
             }
