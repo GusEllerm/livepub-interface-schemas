@@ -1,6 +1,7 @@
 import json, os, requests
 from pyld import jsonld
 from rdflib import Dataset, Graph
+from urllib.parse import urlparse
 
 LIVE_BASE = "https://livepublication.org/interface-schemas"
 
@@ -32,6 +33,16 @@ def make_requests_loader(base_override: str):
 
     cache = {}
 
+    def is_allowed_under_base(url: str, base: str) -> bool:
+        if not base:
+            return False
+        u = urlparse(url)
+        b = urlparse(base)
+        if u.scheme not in ("http", "https"):
+            return False
+        # exact scheme/host/port match; path prefix under base
+        return (u.scheme == b.scheme and u.netloc == b.netloc and u.path.startswith(b.path))
+
     def loader(url, options=None):
         # 1) Rewrite your contexts to the local/remote base
         if url.startswith(LIVE_BASE):
@@ -42,7 +53,7 @@ def make_requests_loader(base_override: str):
             mapped = url if ROCRATE_ONLINE else VENDOR_MAP[url]
 
         # 2b) Allow direct fetches under the override base (localhost server or remote BASE_URL)
-        elif base_override and url.startswith(base_override):
+        elif is_allowed_under_base(url, base_override):
             mapped = url
 
         # 3) Block anything else
@@ -111,7 +122,11 @@ def to_rdf_graph_from_jsonld(doc: dict, base_override: str, rdflib_graph=None):
     # Use pyld to produce N-Quads, then load via rdflib's nquads parser.
     loader = make_requests_loader(base_override)
     expanded = jsonld.expand(doc, options={"documentLoader": loader})
-    nquads = jsonld.to_rdf(expanded, options={"format": "application/n-quads"})
+    nquads = jsonld.to_rdf(expanded, options={
+        "format": "application/n-quads",
+        "useNativeTypes": True,
+        "produceGeneralizedRdf": False
+    })
 
     g = Graph()
     g.parse(data=nquads, format="nquads")

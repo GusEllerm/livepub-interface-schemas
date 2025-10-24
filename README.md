@@ -217,6 +217,16 @@ make test-remote BASE_URL=https://livepublication.org/interface-schemas
 
 Expected: All tests green, no broken links, correct MIME types.
 
+## JSON-LD → RDF pipeline
+
+Examples are expanded with `pyld` using a custom document loader (rewrites our contexts to the local dev server or `BASE_URL`, and allowlists RO-Crate contexts). We then convert to N-Quads with:
+
+- `format = application/n-quads`
+- `useNativeTypes = true` (JSON numbers/booleans map to XSD typed literals)
+- `produceGeneralizedRdf = false`
+
+N-Quads are parsed into an `rdflib.Graph` for SHACL validation. If examples ever start producing named graphs, `tests/test_named_graph_tripwire.py` will fail so we can revisit flattening.
+
 ## RO-Crate context fetching (online vs offline)
 
 By default, tests fetch the official RO-Crate contexts from w3id.org.

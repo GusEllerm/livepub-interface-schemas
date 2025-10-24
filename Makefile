@@ -129,3 +129,9 @@ build-profile:
 
 check-profile:
 	@$(PY) tools/build_profile_context.py --check
+
+.PHONY: debug-nq
+# Usage: make debug-nq FILE=tests/test_json/dsc_full_01.json
+debug-nq:
+	@if [ -z "$(FILE)" ]; then echo 'Usage: make debug-nq FILE=path/to.json'; exit 1; fi
+	@$(PY) tools/dump_nquads.py "$(FILE)"
