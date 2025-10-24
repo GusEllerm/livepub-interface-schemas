@@ -14,9 +14,6 @@ import rdflib as rdf
 from tests._jsonld_utils import to_rdf_graph_from_jsonld
 
 
-TEST_CRATE = pathlib.Path("tests/crates/valid/dsc_min.json")
-
-
 def _get_predicates(g: rdf.Graph) -> set:
     """Extract all predicates from graph."""
     return {str(p) for s, p, o in g.triples((None, None, None))}
@@ -27,7 +24,7 @@ def _get_classes(g: rdf.Graph) -> set:
     return {str(o) for s, p, o in g.triples((None, rdf.RDF.type, None))}
 
 
-def _parse_with_rocrate_mode(online: bool, server_base: str) -> rdf.Graph:
+def _parse_with_rocrate_mode(crate_path: pathlib.Path, online: bool, server_base: str) -> rdf.Graph:
     """Parse crate with specific ROCRATE_ONLINE setting."""
     # Save and restore env var
     old_value = os.environ.get("ROCRATE_ONLINE")
@@ -41,7 +38,7 @@ def _parse_with_rocrate_mode(online: bool, server_base: str) -> rdf.Graph:
         importlib.reload(tests._jsonld_utils)
         
         # Load and parse
-        with open(TEST_CRATE, "r", encoding="utf-8") as fh:
+        with open(crate_path, "r", encoding="utf-8") as fh:
             doc = json.load(fh)
         
         return tests._jsonld_utils.to_rdf_graph_from_jsonld(doc, server_base)
@@ -59,7 +56,7 @@ def _parse_with_rocrate_mode(online: bool, server_base: str) -> rdf.Graph:
         importlib.reload(tests._jsonld_utils)
 
 
-def test_online_offline_parity(server_base):
+def test_online_offline_parity(server_base, valid_crate_path):
     """
     Verify online and offline modes produce identical results.
     
@@ -71,15 +68,18 @@ def test_online_offline_parity(server_base):
     
     Note: RO-Crate 1.1 context uses http://schema.org, while our vendored
     contexts use https://schema.org. Normalized during comparison.
+    
+    This test is parametrized over all files in tests/crates/valid/
+    via the valid_crate_path fixture from conftest.py.
     """
-    g_online = _parse_with_rocrate_mode(True, server_base)
-    g_offline = _parse_with_rocrate_mode(False, server_base)
+    g_online = _parse_with_rocrate_mode(valid_crate_path, True, server_base)
+    g_offline = _parse_with_rocrate_mode(valid_crate_path, False, server_base)
     
     # Triple counts
     count_online = len(g_online)
     count_offline = len(g_offline)
     assert count_online == count_offline, (
-        f"Triple counts differ: online={count_online}, offline={count_offline}"
+        f"[{valid_crate_path.name}] Triple counts differ: online={count_online}, offline={count_offline}"
     )
     
     # Predicates
@@ -94,7 +94,7 @@ def test_online_offline_parity(server_base):
         only_online = predicates_online_norm - predicates_offline_norm
         only_offline = predicates_offline_norm - predicates_online_norm
         pytest.fail(
-            f"Predicate sets differ:\n"
+            f"[{valid_crate_path.name}] Predicate sets differ:\n"
             f"  Only in online: {only_online}\n"
             f"  Only in offline: {only_offline}"
         )
@@ -111,7 +111,7 @@ def test_online_offline_parity(server_base):
         only_online = classes_online_norm - classes_offline_norm
         only_offline = classes_offline_norm - classes_online_norm
         pytest.fail(
-            f"Class sets differ:\n"
+            f"[{valid_crate_path.name}] Class sets differ:\n"
             f"  Only in online: {only_online}\n"
             f"  Only in offline: {only_offline}"
         )
@@ -123,23 +123,23 @@ def test_online_offline_parity(server_base):
     
     # MediaObject should be present (crate has File entity)
     assert media_obj in classes_online_norm, (
-        f"Expected MediaObject in online classes, got: {classes_online_norm}"
+        f"[{valid_crate_path.name}] Expected MediaObject in online classes, got: {classes_online_norm}"
     )
     assert media_obj in classes_offline_norm, (
-        f"Expected MediaObject in offline classes, got: {classes_offline_norm}"
+        f"[{valid_crate_path.name}] Expected MediaObject in offline classes, got: {classes_offline_norm}"
     )
     
     # schema:File should NEVER appear (File always maps to MediaObject)
     assert schema_file not in classes_online_norm, (
-        f"Unexpected schema:File in online classes (should be MediaObject)"
+        f"[{valid_crate_path.name}] Unexpected schema:File in online classes (should be MediaObject)"
     )
     assert schema_file not in classes_offline_norm, (
-        f"Unexpected schema:File in offline classes (should be MediaObject)"
+        f"[{valid_crate_path.name}] Unexpected schema:File in offline classes (should be MediaObject)"
     )
     
-    print(f"\n✓ Online/offline parity: {count_online} triples, "
+    print(f"\n[{valid_crate_path.name}] ✓ Online/offline parity: {count_online} triples, "
           f"{len(predicates_online_norm)} predicates, {len(classes_online_norm)} classes")
-    print(f"✓ File→MediaObject mapping enforced in both modes")
+    print(f"[{valid_crate_path.name}] ✓ File→MediaObject mapping enforced in both modes")
 
 
 

@@ -1,11 +1,14 @@
-import glob
+"""
+SHACL conformance tests for valid crates.
+
+Tests are automatically parametrized over all files in tests/crates/valid/.
+Adding or removing files changes the test set automatically.
+"""
+
 import json
-import pytest
 from pyshacl import validate
 from rdflib import Graph
-from _jsonld_utils import to_rdf_graph_from_jsonld
-
-VALID = sorted(glob.glob("tests/crates/valid/*.json"))
+from tests._jsonld_utils import to_rdf_graph_from_jsonld
 
 
 def _load_shapes_graph(server_base: str) -> Graph:
@@ -16,10 +19,13 @@ def _load_shapes_graph(server_base: str) -> Graph:
     return g
 
 
-@pytest.mark.parametrize("path", VALID)
-def test_valid_crates_conform(server_base, path):
-    """Valid crates must pass SHACL validation."""
-    with open(path, "r", encoding="utf-8") as f:
+def test_valid_crate_conforms(server_base, valid_crate_path):
+    """
+    Valid crates must pass SHACL validation.
+    
+    Parametrized over all files in tests/crates/valid/ via conftest.py.
+    """
+    with open(valid_crate_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     
     data_graph = to_rdf_graph_from_jsonld(data, base_override=server_base)
@@ -33,7 +39,6 @@ def test_valid_crates_conform(server_base, path):
     )
     
     assert conforms, (
-        f"Expected VALID but got violations for {path}:\n"
+        f"Expected VALID but got violations for {valid_crate_path}:\n"
         f"{report_text}"
     )
-

@@ -62,3 +62,46 @@ def server_base():
                 proc.kill()
     except Exception:
         pass
+
+
+# Dynamic test parametrization based on file discovery
+CRATES_DIR = REPO_ROOT / "tests" / "crates"
+VALID_DIR = CRATES_DIR / "valid"
+INVALID_DIR = CRATES_DIR / "invalid"
+
+
+def _json_files(dirpath: pathlib.Path):
+    """Discover all .json and .jsonld files in a directory."""
+    if not dirpath.exists():
+        return []
+    json_files = sorted(dirpath.glob("*.json"))
+    jsonld_files = sorted(dirpath.glob("*.jsonld"))
+    return sorted(json_files + jsonld_files)
+
+
+def pytest_generate_tests(metafunc):
+    """
+    Parametrize tests that declare 'valid_crate_path' or 'invalid_crate_path'.
+    
+    Any test function with these parameters will be automatically parametrized
+    over all discovered files in the corresponding directory.
+    """
+    if "valid_crate_path" in metafunc.fixturenames:
+        paths = _json_files(VALID_DIR)
+        if not paths:
+            pytest.skip(f"No valid crates found under {VALID_DIR}")
+        metafunc.parametrize(
+            "valid_crate_path",
+            [pytest.param(p, id=p.relative_to(VALID_DIR).as_posix()) for p in paths]
+        )
+
+    if "invalid_crate_path" in metafunc.fixturenames:
+        paths = _json_files(INVALID_DIR)
+        if not paths:
+            # Gracefully handle empty invalid directory
+            metafunc.parametrize("invalid_crate_path", [], ids=[])
+        else:
+            metafunc.parametrize(
+                "invalid_crate_path",
+                [pytest.param(p, id=p.relative_to(INVALID_DIR).as_posix()) for p in paths]
+            )

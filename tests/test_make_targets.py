@@ -4,6 +4,7 @@ Make target dry-run verification.
 Ensures documented Make targets execute without errors.
 """
 
+import pathlib
 import re
 import subprocess
 
@@ -22,10 +23,20 @@ def test_make_targets_dry_run():
         ("audit-shapes", r"tests/test_shapes_coverage\.py"),
     ]
     
+    # Discover a valid crate file for debug-nq test
+    valid_dir = pathlib.Path("tests/crates/valid")
+    valid_crates = sorted(valid_dir.glob("*.json")) if valid_dir.exists() else []
+    
     # Separate test for debug-nq (requires FILE= parameter)
-    targets_with_args = [
-        ("debug-nq", "FILE=tests/crates/valid/dsc_min.json", r"tools/dump_nquads\.py"),
-    ]
+    targets_with_args = []
+    if valid_crates:
+        # Use first valid crate found
+        test_crate = valid_crates[0]
+        targets_with_args = [
+            ("debug-nq", f"FILE={test_crate}", r"tools/dump_nquads\.py"),
+        ]
+    else:
+        print("\n[WARNING] No valid crates found, skipping debug-nq target test")
     
     failures = []
     
