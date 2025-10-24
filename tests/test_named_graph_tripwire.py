@@ -1,22 +1,22 @@
-import glob
+import json
 from rdflib import Dataset
 from pyld import jsonld
 from _jsonld_utils import make_requests_loader
-
-EXAMPLES = sorted(glob.glob("tests/test_json/**/*.json", recursive=True)) + sorted(glob.glob("tests/test_json/*.json"))
+from _example_loader import list_all_examples
 
 
 def test_examples_produce_no_named_graphs(server_base):
     """Fail if any example produces quads in a non-default graph."""
     loader = make_requests_loader(server_base)
-    for path in EXAMPLES:
+    for path in list_all_examples():
         with open(path, "r", encoding="utf-8") as f:
-            doc = __import__("json").load(f)
+            doc = json.load(f)
         nq = jsonld.to_rdf(doc, options={
             "documentLoader": loader,
             "format": "application/n-quads",
             "useNativeTypes": True,
             "produceGeneralizedRdf": False,
+            "base": server_base
         })
         ds = Dataset()
         ds.parse(data=nq, format="nquads")

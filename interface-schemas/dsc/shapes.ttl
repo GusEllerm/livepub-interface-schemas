@@ -1,6 +1,78 @@
-@prefix sh:  <http://www.w3.org/ns/shacl#> .
-@prefix dsc: <https://livepublication.org/interface-schemas/dsc#> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <https://schema.org/> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+@prefix dsc:    <https://livepublication.org/interface-schemas/dsc#> .
+@prefix dpc:    <https://livepublication.org/interface-schemas/dpc#> .
 
+# Distributed step must have at least one input OR one output
 dsc:DistributedStepShape
   a sh:NodeShape ;
-  sh:targetClass dsc:DistributedStep .
+  sh:targetClass dsc:DistributedStep ;
+
+  # NORMATIVE I/O: Schema.org (aligned with CreateAction)
+  sh:property [
+    sh:path schema:object ;
+    sh:minCount 0 ;
+    sh:nodeKind sh:IRI ;
+  ] ;
+  sh:property [
+    sh:path schema:result ;
+    sh:minCount 0 ;
+    sh:nodeKind sh:IRI ;
+  ] ;
+  sh:or (
+    [ sh:property [ sh:path schema:object ; sh:minCount 1 ] ]
+    [ sh:property [ sh:path schema:result ; sh:minCount 1 ] ]
+  ) ;
+
+  # Legacy PROV links are ALLOWED but not required (non-normative)
+  sh:property [
+    sh:path prov:used ;
+    sh:minCount 0 ;
+    sh:nodeKind sh:IRI ;
+  ] ;
+  sh:property [
+    sh:path prov:generated ;
+    sh:minCount 0 ;
+    sh:nodeKind sh:IRI ;
+  ] ;
+
+  # Connect to hardware runtime (DPC) — use sh:class to avoid recursion
+  sh:property [
+    sh:path schema:hasPart ;
+    sh:minCount 1 ;
+    sh:class dpc:HardwareRuntime ;
+  ] ;
+
+  # Optional times, if present must be xsd:dateTime
+  sh:property [
+    sh:path prov:startedAtTime ; 
+    sh:datatype xsd:dateTime ; 
+    sh:minCount 0
+  ] ;
+  sh:property [
+    sh:path prov:endedAtTime ; 
+    sh:datatype xsd:dateTime ; 
+    sh:minCount 0
+  ] .
+
+# HowToStep used by the step
+dsc:HowToStepShape
+  a sh:NodeShape ;
+  sh:targetClass schema:HowToStep ;
+  sh:property [ 
+    sh:path schema:position ; 
+    sh:datatype xsd:integer ; 
+    sh:minCount 1 
+  ] ;
+  sh:property [ 
+    sh:path schema:identifier ; 
+    sh:datatype xsd:string ; 
+    sh:minCount 0 
+  ] ;
+  sh:property [ 
+    sh:path schema:sourceOrganization ; 
+    sh:nodeKind sh:IRI ; 
+    sh:minCount 0 
+  ] .

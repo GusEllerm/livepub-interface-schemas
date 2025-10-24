@@ -121,11 +121,12 @@ def to_rdf_graph_from_jsonld(doc: dict, base_override: str, rdflib_graph=None):
     # Prefer avoiding rdflib's JSON-LD parser to eliminate ConjunctiveGraph warnings.
     # Use pyld to produce N-Quads, then load via rdflib's nquads parser.
     loader = make_requests_loader(base_override)
-    expanded = jsonld.expand(doc, options={"documentLoader": loader})
+    expanded = jsonld.expand(doc, options={"documentLoader": loader, "base": base_override})
     nquads = jsonld.to_rdf(expanded, options={
         "format": "application/n-quads",
         "useNativeTypes": True,
-        "produceGeneralizedRdf": False
+        "produceGeneralizedRdf": False,
+        "base": base_override
     })
 
     g = Graph()

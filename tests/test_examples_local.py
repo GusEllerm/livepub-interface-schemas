@@ -1,38 +1,37 @@
-import glob, os
+"""Local round-trip tests for valid example crates."""
+import json
+import pytest
 from rdflib import Graph
 from pyshacl import validate
-from _jsonld_utils import load_json_file, expand_with_override, to_rdf_graph_from_jsonld
-
-EXAMPLES = sorted(glob.glob("tests/test_json/**/*.json", recursive=True)) + sorted(glob.glob("tests/test_json/*.json"))
-
-
-def test_examples_exist():
-    # If you remove samples, keep this soft so the suite still passes.
-    assert len(EXAMPLES) >= 1, "Place example manifests in tests/test_json/*.json"
+from _jsonld_utils import expand_with_override, to_rdf_graph_from_jsonld
+from _example_loader import list_valid_examples
 
 
-def test_all_examples_expand_locally(server_base):
-    base = server_base  # e.g., http://localhost:PORT/interface-schemas
-    for path in EXAMPLES:
-        doc = load_json_file(path)
-        expanded = expand_with_override(doc, base_override=base)
-        assert expanded and isinstance(expanded, list), f"Expand failed for {path}"
+@pytest.mark.parametrize("path", list_valid_examples())
+def test_expand_and_parse_to_graph(server_base, path):
+    """Valid examples must expand and produce a non-empty RDF graph."""
+    with open(path, "r", encoding="utf-8") as f:
+        doc = json.load(f)
+    expanded = expand_with_override(doc, base_override=server_base)
+    assert expanded and isinstance(expanded, list), f"Expand failed for {path}"
+    
+    g = to_rdf_graph_from_jsonld(doc, base_override=server_base)
+    assert len(g) > 0, f"Empty graph for {path}"
 
 
-def test_all_examples_validate_shacl_locally(server_base):
-    base = server_base
-    # Load shapes once
-    dpc_shapes = Graph().parse(f"{base}/dpc/shapes.ttl")
-    dsc_shapes = Graph().parse(f"{base}/dsc/shapes.ttl")
+@pytest.mark.parametrize("path", list_valid_examples())
+def test_valid_examples_conform_to_shacl(server_base, path):
+    """Valid examples must pass SHACL validation."""
+    with open(path, "r", encoding="utf-8") as f:
+        doc = json.load(f)
+    g = to_rdf_graph_from_jsonld(doc, base_override=server_base)
 
-    for path in EXAMPLES:
-        doc = load_json_file(path)
-        g = to_rdf_graph_from_jsonld(doc, base_override=base)
+    # Load shapes
+    dpc_shapes = Graph().parse(f"{server_base}/dpc/shapes.ttl", format="turtle")
+    dsc_shapes = Graph().parse(f"{server_base}/dsc/shapes.ttl", format="turtle")
 
-        # Validate against both shape graphs; only targeted classes will be checked
-        conforms1, _, rep1 = validate(g, shacl_graph=dpc_shapes, inference='rdfs', debug=False)
-        conforms2, _, rep2 = validate(g, shacl_graph=dsc_shapes, inference='rdfs', debug=False)
+    # Validate against both shape graphs
+    conforms1, _, rep1 = validate(g, shacl_graph=dpc_shapes, inference='rdfs', debug=False)
+    conforms2, _, rep2 = validate(g, shacl_graph=dsc_shapes, inference='rdfs', debug=False)
 
-        # We accept if BOTH shapes don't apply (still conforms) or if they apply and pass.
-        # If a shape applies and fails, pySHACL returns conforms=False.
-        assert conforms1 and conforms2, f"SHACL failed for {path}\nDPC:\n{rep1}\nDSC:\n{rep2}"
+    assert conforms1 and conforms2, f"SHACL failed for {path}\nDPC:\n{rep1}\nDSC:\n{rep2}"

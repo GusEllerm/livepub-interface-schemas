@@ -21,6 +21,54 @@
     },
     "dsc": "https://livepublication.org/interface-schemas/dsc#",
     "DistributedStep": "dsc:DistributedStep",
+    "@vocab": "https://schema.org/",
+    "name": "schema:name",
+    "description": "schema:description",
+    "value": "schema:value",
+    "hasPart": {
+      "@id": "schema:hasPart",
+      "@type": "@id"
+    },
+    "step": {
+      "@id": "schema:step",
+      "@type": "@id"
+    },
+    "additionalProperty": {
+      "@id": "schema:additionalProperty",
+      "@type": "@id"
+    },
+    "position": "schema:position",
+    "identifier": "schema:identifier",
+    "sourceOrganization": {
+      "@id": "schema:sourceOrganization",
+      "@type": "@id"
+    },
+    "requiresSubscription": "schema:requiresSubscription",
+    "Observation": "schema:Observation",
+    "PropertyValue": "schema:PropertyValue",
+    "observationAbout": {
+      "@id": "schema:observationAbout",
+      "@type": "@id"
+    },
+    "measurementTechnique": "schema:measurementTechnique",
+    "minValue": "schema:minValue",
+    "maxValue": "schema:maxValue",
+    "valueReference": {
+      "@id": "schema:valueReference",
+      "@type": "@id"
+    },
+    "image": {
+      "@id": "schema:image",
+      "@type": "@id"
+    },
+    "object": {
+      "@id": "schema:object",
+      "@type": "@id"
+    },
+    "result": {
+      "@id": "schema:result",
+      "@type": "@id"
+    },
     "used": {
       "@id": "prov:used",
       "@type": "@id"

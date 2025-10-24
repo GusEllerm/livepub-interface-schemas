@@ -269,6 +269,31 @@ Use it in manifests (after RO-Crate contexts if present):
 ]
 ```
 
+## Modeling choices
+
+### DSC I/O properties
+
+DistributedStep uses **Schema.org properties** for inputs and outputs, aligned with `CreateAction`:
+
+- **`object`** (input): The input resources or data consumed by the step
+- **`result`** (output): The output resources or data produced by the step
+
+At least one of `object` or `result` is required for conformance.
+
+**Legacy PROV support**: `prov:used` and `prov:generated` are accepted for backward compatibility but are not normative and do not satisfy the conformance gate by themselves. New crates should use `object` and `result`.
+
+Example:
+
+```json
+{
+  "@id": "#step1",
+  "@type": "DistributedStep",
+  "hasPart": {"@id": "#runtime1"},
+  "object": {"@id": "#input.txt"},
+  "result": {"@id": "#output.txt"}
+}
+```
+
 ## Commit
 
 ```bash

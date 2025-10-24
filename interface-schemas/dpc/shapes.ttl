@@ -1,5 +1,7 @@
-@prefix sh:  <http://www.w3.org/ns/shacl#> .
-@prefix dpc: <https://livepublication.org/interface-schemas/dpc#> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <https://schema.org/> .
+@prefix dpc:    <https://livepublication.org/interface-schemas/dpc#> .
 
 dpc:HardwareRuntimeShape
   a sh:NodeShape ;
@@ -7,5 +9,88 @@ dpc:HardwareRuntimeShape
   sh:property [
     sh:path dpc:component ;
     sh:minCount 1 ;
+    sh:class dpc:HardwareComponent ;     # was: sh:node dpc:HardwareComponentShape
     sh:message "A HardwareRuntime must have at least one dpc:component." ;
+  ] .
+
+dpc:HardwareComponentShape
+  a sh:NodeShape ;
+  sh:targetClass dpc:HardwareComponent ;
+  sh:property [ 
+    sh:path schema:name ; 
+    sh:datatype xsd:string ; 
+    sh:minCount 1 ;
+    sh:message "HardwareComponent must have a name."
+  ] ;
+  # optional performance link
+  sh:property [
+    sh:path dpc:performance ;
+    sh:minCount 0 ;
+    sh:class schema:Observation ;        # was: sh:node dpc:ObservationShape
+  ] ;
+  # additionalProperty should be PropertyValue entries with name and value
+  sh:property [
+    sh:path schema:additionalProperty ;
+    sh:minCount 0 ;
+    sh:node [
+      a sh:NodeShape ;
+      sh:targetClass schema:PropertyValue ;
+      sh:property [ 
+        sh:path schema:name ;  
+        sh:datatype xsd:string ;  
+        sh:minCount 1 
+      ] ;
+      sh:property [ 
+        sh:path schema:value ; 
+        sh:minCount 1 
+      ] ;
+    ]
+  ] .
+
+dpc:ObservationShape
+  a sh:NodeShape ;
+  sh:targetClass schema:Observation ;
+  sh:property [ 
+    sh:path schema:observationAbout ; 
+    sh:minCount 1 ;
+    sh:class dpc:HardwareComponent ;     # was: sh:node dpc:HardwareComponentShape
+  ] ;
+  sh:property [ 
+    sh:path schema:measurementTechnique ; 
+    sh:datatype xsd:string ; 
+    sh:minCount 0 
+  ] ;
+  sh:property [ 
+    sh:path schema:minValue ; 
+    sh:or ( 
+      [sh:datatype xsd:double] 
+      [sh:datatype xsd:integer] 
+    ); 
+    sh:minCount 0 
+  ] ;
+  sh:property [ 
+    sh:path schema:maxValue ; 
+    sh:or ( 
+      [sh:datatype xsd:double] 
+      [sh:datatype xsd:integer] 
+    ); 
+    sh:minCount 0 
+  ] ;
+  sh:property [ 
+    sh:path schema:value ; 
+    sh:or ( 
+      [sh:datatype xsd:double] 
+      [sh:datatype xsd:integer] 
+    ); 
+    sh:minCount 0 
+  ] ;
+  sh:property [ 
+    sh:path schema:valueReference ; 
+    sh:nodeKind sh:IRI ; 
+    sh:minCount 0 
+  ] ;
+  sh:property [ 
+    sh:path schema:image ; 
+    sh:nodeKind sh:IRI ; 
+    sh:minCount 0 
   ] .

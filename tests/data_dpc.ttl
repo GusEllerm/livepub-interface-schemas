@@ -1,7 +1,9 @@
 @prefix dpc: <https://livepublication.org/interface-schemas/dpc#> .
+@prefix schema: <https://schema.org/> .
 @prefix ex:  <http://example.org/> .
 
 ex:run1 a dpc:HardwareRuntime ;
   dpc:component ex:gpu0 .
 
-ex:gpu0 a dpc:HardwareComponent .
+ex:gpu0 a dpc:HardwareComponent ;
+  schema:name "GPU 0" .

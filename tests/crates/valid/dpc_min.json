@@ -1,0 +1,29 @@
+{
+  "@context": [
+    "https://w3id.org/ro/crate/1.1/context",
+    "https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "Minimal DPC Example",
+      "hasPart": {"@id": "#runtime1"}
+    },
+    {
+      "@id": "ro-crate-metadata.json",
+      "@type": "CreativeWork",
+      "about": {"@id": "./"},
+      "conformsTo": {"@id": "https://w3id.org/ro/crate/1.1"}
+    },
+    {
+      "@id": "#runtime1",
+      "@type": "HardwareRuntime",
+      "component": {
+        "@id": "#gpu0",
+        "@type": "HardwareComponent",
+        "name": "GPU 0"
+      }
+    }
+  ]
+}

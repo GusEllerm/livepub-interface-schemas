@@ -1,5 +1,0 @@
-{
-  "@context": "http://localhost:8000/interface-schemas/dpc/contexts/v1.jsonld",
-  "@type": "HardwareRuntime",
-  "component": "http://example.org/run/123#gpu0"
-}

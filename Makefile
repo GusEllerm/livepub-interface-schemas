@@ -22,6 +22,7 @@ WEB_ROOT ?= /var/www/livepublication
 
 .PHONY: help init venv install serve serve-bg stop urls test smoke clean superclean
 .PHONY: test-remote smoke-remote deploy-rsync build-profile check-profile test-online test-offline
+.PHONY: test-crates test-policy debug-nq
 
 help:
 	@echo "Targets:"
@@ -135,3 +136,11 @@ check-profile:
 debug-nq:
 	@if [ -z "$(FILE)" ]; then echo 'Usage: make debug-nq FILE=path/to.json'; exit 1; fi
 	@$(PY) tools/dump_nquads.py "$(FILE)"
+
+.PHONY: test-crates
+test-crates:
+	@$(PYTEST) -q tests/test_conformance_crates.py
+
+.PHONY: test-policy
+test-policy:
+	@$(PYTEST) -q tests/test_policy.py

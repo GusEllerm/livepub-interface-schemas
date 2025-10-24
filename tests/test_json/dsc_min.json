@@ -1,4 +1,0 @@
-{
-  "@context": "https://livepublication.org/interface-schemas/dsc/contexts/v1.jsonld",
-  "@type": "DistributedStep"
-}

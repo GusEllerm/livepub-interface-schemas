@@ -1,0 +1,50 @@
+{
+  "@context": [
+    "https://w3id.org/ro/crate/1.1/context",
+    "https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "Legacy PROV-only DSC (should fail conformance)",
+      "hasPart": [
+        {"@id": "#step1"},
+        {"@id": "#runtime1"}
+      ]
+    },
+    {
+      "@id": "ro-crate-metadata.json",
+      "@type": "CreativeWork",
+      "about": {"@id": "./"},
+      "conformsTo": {"@id": "https://w3id.org/ro/crate/1.1"}
+    },
+    {
+      "@id": "#step1",
+      "@type": "DistributedStep",
+      "hasPart": {"@id": "#runtime1"},
+      "used": {"@id": "#input.txt"},
+      "generated": {"@id": "#output.txt"}
+    },
+    {
+      "@id": "#runtime1",
+      "@type": "HardwareRuntime",
+      "component": {"@id": "#cpu0"}
+    },
+    {
+      "@id": "#cpu0",
+      "@type": "HardwareComponent",
+      "name": "CPU 0"
+    },
+    {
+      "@id": "#input.txt",
+      "@type": "File",
+      "name": "input.txt"
+    },
+    {
+      "@id": "#output.txt",
+      "@type": "File",
+      "name": "output.txt"
+    }
+  ]
+}

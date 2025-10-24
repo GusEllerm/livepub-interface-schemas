@@ -6,6 +6,37 @@ DPC_DEFAULT = ROOT / "interface-schemas" / "dpc" / "contexts" / "v1.jsonld"
 DSC_DEFAULT = ROOT / "interface-schemas" / "dsc" / "contexts" / "v1.jsonld"
 OUT_DEFAULT = ROOT / "interface-schemas" / "contexts" / "lp-dscdpc" / "v1.jsonld"
 
+SCHEMA_BLOCK = {
+    "@vocab": "https://schema.org/",
+    "schema": "https://schema.org/",
+    # Commonly-used schema terms explicitly remapped to HTTPS to override RO-Crate's HTTP mappings
+    # Core text/value terms
+    "name": "schema:name",
+    "description": "schema:description",
+    "value": "schema:value",
+    # Linking/container terms
+    "hasPart": {"@id": "schema:hasPart", "@type": "@id"},
+    "step": {"@id": "schema:step", "@type": "@id"},
+    "additionalProperty": {"@id": "schema:additionalProperty", "@type": "@id"},
+    # HowToStep terms
+    "position": "schema:position",
+    "identifier": "schema:identifier",
+    "sourceOrganization": {"@id": "schema:sourceOrganization", "@type": "@id"},
+    "requiresSubscription": "schema:requiresSubscription",
+    # Observation terms
+    "Observation": "schema:Observation",
+    "PropertyValue": "schema:PropertyValue",
+    "observationAbout": {"@id": "schema:observationAbout", "@type": "@id"},
+    "measurementTechnique": "schema:measurementTechnique",
+    "minValue": "schema:minValue",
+    "maxValue": "schema:maxValue",
+    "valueReference": {"@id": "schema:valueReference", "@type": "@id"},
+    "image": {"@id": "schema:image", "@type": "@id"},
+    # I/O terms (CreateAction-aligned)
+    "object": {"@id": "schema:object", "@type": "@id"},
+    "result": {"@id": "schema:result", "@type": "@id"},
+}
+
 PROV_BLOCK = {
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "prov": "http://www.w3.org/ns/prov#",
@@ -41,7 +72,7 @@ def main():
 
     dpc_ctx = load_context(args.dpc)
     dsc_ctx = load_context(args.dsc)
-    merged = merge_contexts(dpc_ctx, dsc_ctx, PROV_BLOCK)
+    merged = merge_contexts(dpc_ctx, dsc_ctx, SCHEMA_BLOCK, PROV_BLOCK)
 
     out_obj = {"@context": merged}
     out_text = json.dumps(out_obj, indent=2, ensure_ascii=False) + "\n"
