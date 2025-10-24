@@ -1,5 +1,8 @@
 # LivePublication Interface Schemas (local dev)
 
+**Author:** Augustus Ellerm (ael854@aucklanduni.ac.nz)  
+**License:** CC BY 4.0
+
 This project provides **local development and validation** for the DPC (Distributed Provenance Crate) and DSC (Distributed Step Crate) vocabularies, JSON-LD contexts, SHACL shapes, and HTML landing pages.
 
 ## Quick start
@@ -285,6 +288,7 @@ make audit-vocab-offline # offline (vendored contexts)
 ```
 
 The audit produces a JSON report at `.artifacts/vocab_inventory.json` with:
+
 - Predicate and class counts by namespace
 - Top terms used across all crates
 - Literal datatype distribution (XSD types)
@@ -292,6 +296,7 @@ The audit produces a JSON report at `.artifacts/vocab_inventory.json` with:
 - Unknown namespaces not in the allowlist
 
 The audit also runs a contract test on valid crates to ensure:
+
 - No `http://schema.org/*` predicates (HTTPS only)
 - Native XSD types present for booleans/numbers
 
@@ -331,6 +336,7 @@ The audit includes a contract test (`test_valid_crates_vocab_contract`) that **f
 Based on the latest audit of `tests/crates/{valid,invalid}`:
 
 **Top 5 namespaces:**
+
 1. `https://schema.org/`: 1,423 predicates ✓
 2. `http://www.w3.org/1999/02/22-rdf-syntax-ns#`: 507 (rdf:type)
 3. `https://livepublication.org/interface-schemas/dpc#`: 31
@@ -338,6 +344,7 @@ Based on the latest audit of `tests/crates/{valid,invalid}`:
 5. `https://w3id.org/ro/terms/workflow-run#`: 12
 
 **Top 10 terms:**
+
 1. `rdf:type`: 507
 2. `schema:name`: 439
 3. `schema:value`: 338
@@ -350,6 +357,7 @@ Based on the latest audit of `tests/crates/{valid,invalid}`:
 10. `dcterms:conformsTo`: 14
 
 **Literal types (native XSD):**
+
 - `xsd:integer`: 18
 - `xsd:double`: 17
 - `xsd:boolean`: 6
@@ -357,6 +365,7 @@ Based on the latest audit of `tests/crates/{valid,invalid}`:
 - `xsd:dateTime`: 2
 
 **Contract status:**
+
 - ✅ Zero `http://schema.org/*` predicates
 - ✅ Native XSD types present
 - ✅ All namespaces recognized
@@ -488,22 +497,25 @@ All artifacts land in `.artifacts/` (git-ignored).
 ### 1. Vocabulary inventory (non-failing)
 
 **What it does:**
+
 - Walks all crates under `tests/crates/{valid,invalid}`
 - Expands JSON-LD and converts to RDF
 - Produces detailed vocabulary statistics
 
 **Artifacts:**
+
 - `.artifacts/vocab_inventory.json` — Global aggregates:
+
   - `by_namespace`: Predicate counts per namespace
   - `by_term`: Top 100 terms by usage
   - `classes_by_namespace`: Class usage
   - `literal_types`: XSD datatype distribution
   - `http_schema_terms`: HTTP schema.org violations (should be empty)
   - `unknown_namespaces`: Unrecognized namespaces
-
 - `.artifacts/vocab_by_file.json` — Per-file breakdown of the above
 
 **Run:**
+
 ```bash
 make audit-vocab         # Online (fetches RO-Crate contexts)
 make audit-vocab-offline # Offline (vendored contexts)
@@ -512,10 +524,12 @@ make audit-vocab-offline # Offline (vendored contexts)
 ### 2. SPARQL policy checks (failing)
 
 **What it does:**
+
 - Runs ASK queries from `tests/policy/queries/` against valid crates
 - Enforces crisp policy rules with clear failure messages
 
 **Current policies:**
+
 1. **no_http_schema_org.rq** — No `http://schema.org/*` predicates (HTTPS only)
 2. **distributed_step_io.rq** — DistributedStep must have `schema:object` or `schema:result`
 3. **control_action_target.rq** — ControlAction must target a DistributedStep
@@ -524,11 +538,13 @@ make audit-vocab-offline # Offline (vendored contexts)
 6. **date_time_types.rq** — Date/time properties must use `xsd:date` or `xsd:dateTime`
 
 **Run:**
+
 ```bash
 make audit-sparql
 ```
 
 **Failure example:**
+
 ```
 [SPARQL POLICY] requires_subscription_boolean failed for 2 crate(s):
   File: tests/crates/valid/dsc_full_02.json
@@ -536,6 +552,7 @@ make audit-sparql
 ```
 
 **Adding new policies:**
+
 1. Create a `.rq` file under `tests/policy/queries/`
 2. Write an ASK query that returns `true` when the policy is violated
 3. Run `make audit-sparql` to validate
@@ -543,11 +560,13 @@ make audit-sparql
 ### 3. SHACL shape coverage (non-failing)
 
 **What it does:**
+
 - Validates all valid crates with SHACL
 - Tracks which shapes are actually exercised
 - Identifies shapes with zero coverage (dead or over-narrow shapes)
 
 **Artifact:**
+
 - `.artifacts/shapes_coverage.json` — Per-shape statistics:
   - `files`: Which crates exercise the shape
   - `total_nodes`: Number of nodes validated
@@ -555,11 +574,13 @@ make audit-sparql
   - `example_nodes`: Sample node IRIs
 
 **Run:**
+
 ```bash
 make audit-shapes
 ```
 
 **Output:**
+
 ```
 [COVERAGE] Total shapes defined: 15
 [COVERAGE] Shapes exercised: 12
@@ -571,25 +592,30 @@ make audit-shapes
 ### 4. Vocabulary baseline drift (failing)
 
 **What it does:**
+
 - Compares current vocabulary against committed baseline
 - Catches unexpected namespace/term changes
 - Enforces stability for critical terms
 
 **Baseline:**
+
 - `tests/fixtures/vocab_baseline.json` (committed)
 - Generated from current crates; reviewed and committed
 
 **Run:**
+
 ```bash
 pytest tests/test_vocab_baseline.py
 ```
 
 **Failure conditions:**
+
 - New namespaces appear (not in allowlist)
 - `http://schema.org/*` reappears
 - Critical terms disappear or change >20%
 
 **Update baseline:**
+
 ```bash
 VOCAB_BASELINE_UPDATE=1 pytest tests/test_vocab_baseline.py
 git diff tests/fixtures/vocab_baseline.json  # Review changes
@@ -599,7 +625,7 @@ git commit -m "chore: update vocab baseline"
 
 ### Running diagnostics offline
 
-All audit targets support offline mode (vendored RO-Crate contexts):
+All audit targets support offline validation (vendored RO-Crate contexts):
 
 ```bash
 ROCRATE_ONLINE=0 make audit-vocab
@@ -610,19 +636,14 @@ ROCRATE_ONLINE=0 make coverage-all
 ### CI integration
 
 **Diagnostics job (non-blocking):**
+
 ```yaml
 - make coverage-all
 ```
 
-**Required checks (blocking):**
+**Required checks:**
+
 ```yaml
 - make audit-sparql  # Enforce policy violations
 - pytest tests/test_vocab_baseline.py  # Catch drift
-```
-
-## Commit
-
-```bash
-git add .
-git -c user.name="REPLACE_WITH_YOUR_NAME" -c user.email="devnull@example.com" commit -m "feat: local skeleton for DPC/DSC with contexts, TTL, SHACL, dev server, tests"
 ```

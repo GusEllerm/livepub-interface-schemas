@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""
+Local development server for LivePublication Interface Schemas.
+
+Author: Augustus Ellerm <ael854@aucklanduni.ac.nz>
+License: CC BY 4.0
+"""
 import argparse, http.server, socketserver, mimetypes, re, os
 
 mimetypes.add_type('application/ld+json', '.jsonld')

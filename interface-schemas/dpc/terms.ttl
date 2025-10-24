@@ -10,9 +10,10 @@
 <https://livepublication.org/interface-schemas/dpc/>
   a owl:Ontology ;
   dct:title "Distributed Provenance Crate (DPC) Vocabulary" ;
-  dct:creator "REPLACE_WITH_YOUR_NAME" ;
+  dct:creator "Augustus Ellerm" ;
+  dct:contributor "Augustus Ellerm <ael854@aucklanduni.ac.nz>" ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:issued "2025-10-24"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dct:issued "2025-10-25"^^<http://www.w3.org/2001/XMLSchema#date> ;
   owl:versionInfo "0.1.0" ;
   vann:preferredNamespacePrefix "dpc" ;
   vann:preferredNamespaceUri "https://livepublication.org/interface-schemas/dpc#" .

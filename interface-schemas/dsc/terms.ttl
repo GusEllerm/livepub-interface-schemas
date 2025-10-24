@@ -7,14 +7,15 @@
 <https://livepublication.org/interface-schemas/dsc/>
   a owl:Ontology ;
   dct:title "Distributed Step Crate (DSC) Vocabulary" ;
-  dct:creator "REPLACE_WITH_YOUR_NAME" ;
+  dct:creator "Augustus Ellerm" ;
+  dct:contributor "Augustus Ellerm <ael854@aucklanduni.ac.nz>" ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:issued "2025-10-24"^^<http://www.w3.org/2001/XMLSchema#date> ;
+  dct:issued "2025-10-25"^^<http://www.w3.org/2001/XMLSchema#date> ;
   owl:versionInfo "0.1.0" ;
   vann:preferredNamespacePrefix "dsc" ;
   vann:preferredNamespaceUri "https://livepublication.org/interface-schemas/dsc#" .
 
-# Placeholder terms; to refine later
+# Note: draft terms; subject to revision
 dsc:DistributedStep a rdfs:Class ;
   rdfs:label "Distributed Step" ;
   rdfs:comment "A step executed in a distributed WMS context." .
