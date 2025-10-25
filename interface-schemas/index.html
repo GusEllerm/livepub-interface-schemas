@@ -1,8 +1,118 @@
 <!doctype html>
-<meta charset="utf-8">
-<title>LivePublication Interface Schemas</title>
-<h1>LivePublication Interface Schemas</h1>
-<ul>
-  <li><a href="/interface-schemas/dpc/">Distributed Provenance Crate (DPC)</a></li>
-  <li><a href="/interface-schemas/dsc/">Distributed Step Crate (DSC)</a></li>
-</ul>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Augustus Ellerm">
+  <title>LivePublication Interface Schemas</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #333;
+    }
+    h1 { color: #2c5282; border-bottom: 2px solid #4299e1; padding-bottom: 0.5rem; }
+    h2 { color: #2d3748; margin-top: 2rem; }
+    .module { 
+      background: #f7fafc; 
+      border-left: 4px solid #4299e1; 
+      padding: 1rem; 
+      margin: 1rem 0; 
+      border-radius: 4px;
+    }
+    .module h3 { margin-top: 0; color: #2c5282; }
+    ul { list-style: none; padding-left: 0; }
+    li { margin: 0.5rem 0; }
+    a { color: #3182ce; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code { 
+      background: #edf2f7; 
+      padding: 0.2rem 0.4rem; 
+      border-radius: 3px; 
+      font-size: 0.9em;
+    }
+    footer { 
+      margin-top: 3rem; 
+      padding-top: 1rem; 
+      border-top: 1px solid #e2e8f0; 
+      font-size: 0.9em; 
+      color: #718096;
+    }
+  </style>
+</head>
+<body>
+  <h1>LivePublication Interface Schemas</h1>
+  
+  <p>
+    This namespace hosts vocabularies, SHACL shapes, and JSON-LD contexts for 
+    LivePublication distributed workflow provenance and execution tracking.
+  </p>
+
+  <h2>Available Modules</h2>
+
+  <div class="module">
+    <h3>DPC — Distributed Provenance Crate</h3>
+    <p>Hardware runtime snapshots and component performance tracking for distributed workflow steps.</p>
+    <ul>
+      <li>📄 <a href="./dpc/">HTML Landing Page</a></li>
+      <li>🔤 <a href="./dpc/terms.ttl">Vocabulary (Turtle)</a></li>
+      <li>✓ <a href="./dpc/shapes.ttl">SHACL Shapes (Turtle)</a></li>
+      <li>🔗 Contexts:
+        <ul style="padding-left: 1.5rem; list-style: disc;">
+          <li><a href="./dpc/contexts/v1.jsonld">v1.jsonld</a> (immutable)</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <h3>DSC — Distributed Step Crate</h3>
+    <p>Workflow step execution metadata with schema.org-aligned I/O semantics.</p>
+    <ul>
+      <li>📄 <a href="./dsc/">HTML Landing Page</a></li>
+      <li>🔤 <a href="./dsc/terms.ttl">Vocabulary (Turtle)</a></li>
+      <li>✓ <a href="./dsc/shapes.ttl">SHACL Shapes (Turtle)</a></li>
+      <li>🔗 Contexts:
+        <ul style="padding-left: 1.5rem; list-style: disc;">
+          <li><a href="./dsc/contexts/v1.jsonld">v1.jsonld</a> (immutable)</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <h3>Combined Context (LP-DSCDPC)</h3>
+    <p>Merged context for documents using both DPC and DSC together.</p>
+    <ul>
+      <li>🔗 <a href="./contexts/lp-dscdpc/v1.jsonld">v1.jsonld</a> (immutable)</li>
+    </ul>
+  </div>
+
+  <h2>Content Negotiation</h2>
+  <p>
+    Module base URLs (e.g., <code>/interface-schemas/dpc</code>) support content negotiation:
+  </p>
+  <ul>
+    <li><strong>HTML</strong> (default): Human-readable landing page</li>
+    <li><strong>Turtle</strong> (<code>Accept: text/turtle</code>): Machine-readable vocabulary</li>
+  </ul>
+
+  <h2>Publishing &amp; Versioning</h2>
+  <p>
+    See <a href="https://github.com/GusEllerm/livepub-interface-schemas/blob/main/PUBLISHING.md">PUBLISHING.md</a> 
+    for details on adding modules, versioning contexts, and deployment policies.
+  </p>
+
+  <footer>
+    <p>
+      <strong>Maintainer:</strong> Augustus Ellerm 
+      (<a href="mailto:ael854@aucklanduni.ac.nz">ael854@aucklanduni.ac.nz</a>)<br>
+      <strong>License:</strong> <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><br>
+      <strong>Repository:</strong> <a href="https://github.com/GusEllerm/livepub-interface-schemas">GitHub</a>
+    </p>
+  </footer>
+</body>
+</html>
