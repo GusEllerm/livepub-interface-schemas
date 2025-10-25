@@ -1,6 +1,6 @@
 # LivePublication Interface Schemas (local dev)
 
-**Author:** Augustus Ellerm (ael854@aucklanduni.ac.nz)  
+**Author:** Augustus Ellerm (ael854@aucklanduni.ac.nz)
 **License:** CC BY 4.0
 
 This project provides **local development and validation** for the DPC (Distributed Provenance Crate) and DSC (Distributed Step Crate) vocabularies, JSON-LD contexts, SHACL shapes, and HTML landing pages.
@@ -337,7 +337,7 @@ Based on the latest audit of `tests/crates/{valid,invalid}`:
 
 **Top 5 namespaces:**
 
-1. `https://schema.org/`: 1,423 predicates ✓
+1. `https://schema.org/`: 1,423 predicates 
 2. `http://www.w3.org/1999/02/22-rdf-syntax-ns#`: 507 (rdf:type)
 3. `https://livepublication.org/interface-schemas/dpc#`: 31
 4. `http://purl.org/dc/terms/`: 14 (conformsTo)
