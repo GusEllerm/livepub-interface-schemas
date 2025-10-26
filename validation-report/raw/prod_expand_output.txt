@@ -1,0 +1,32 @@
+[fetch] https://w3id.org/ro/crate/1.1/context
+  -> redirected to https://www.researchobject.org/ro-crate/specification/1.1/context.jsonld
+[fetch] https://w3id.org/ro/terms/workflow-run/context
+  -> redirected to https://www.researchobject.org/ro-terms/workflow-run/context.jsonld
+[fetch] https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld
+
+Expanded graph has 14 nodes
+
+Unique class IRIs:
+  http://schema.org/ActionAccessSpecification
+  http://schema.org/CreateAction
+  http://schema.org/CreativeWork
+  http://schema.org/Dataset
+  http://schema.org/HowTo
+  http://schema.org/HowToStep
+  http://schema.org/Organization
+  http://schema.org/Schedule
+  https://livepublication.org/interface-schemas/dpc#HardwareComponent
+  https://livepublication.org/interface-schemas/dpc#HardwareRuntime
+  https://livepublication.org/interface-schemas/dsc#DistributedStep
+  https://schema.org/MediaObject
+  https://schema.org/Observation
+
+Predicates using livepublication.org/interface-schemas/:
+  https://livepublication.org/interface-schemas/dpc#component
+  https://livepublication.org/interface-schemas/dpc#performance
+
+Any http://schema.org/* predicates?
+  NO
+
+Any schema:File class types?
+  NO

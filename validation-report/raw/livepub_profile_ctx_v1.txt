@@ -1,0 +1,160 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  3643  100  3643    0     0   144k      0 --:--:-- --:--:-- --:--:--  148k
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sun, 26 Oct 2025 22:44:08 GMT
+Content-Type: application/ld+json
+Content-Length: 3643
+Last-Modified: Sat, 25 Oct 2025 01:42:13 GMT
+Connection: keep-alive
+ETag: "68fc2af5-e3b"
+Access-Control-Allow-Origin: *
+Cache-Control: public, max-age=31536000, immutable
+Accept-Ranges: bytes
+
+{
+  "@context": {
+    "@version": 1.1,
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema": "https://schema.org/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "dpc": "https://livepublication.org/interface-schemas/dpc#",
+    "HardwareRuntime": "dpc:HardwareRuntime",
+    "HardwareComponent": "dpc:HardwareComponent",
+    "component": {
+      "@id": "dpc:component",
+      "@type": "@id"
+    },
+    "performance": {
+      "@id": "dpc:performance",
+      "@type": "@id"
+    },
+    "startedAtTime": {
+      "@id": "prov:startedAtTime",
+      "@type": "xsd:dateTime"
+    },
+    "dsc": "https://livepublication.org/interface-schemas/dsc#",
+    "DistributedStep": "dsc:DistributedStep",
+    "@vocab": "https://schema.org/",
+    "name": "schema:name",
+    "description": "schema:description",
+    "value": "schema:value",
+    "hasPart": {
+      "@id": "schema:hasPart",
+      "@type": "@id"
+    },
+    "step": {
+      "@id": "schema:step",
+      "@type": "@id"
+    },
+    "additionalProperty": {
+      "@id": "schema:additionalProperty",
+      "@type": "@id"
+    },
+    "position": "schema:position",
+    "identifier": "schema:identifier",
+    "sourceOrganization": {
+      "@id": "schema:sourceOrganization",
+      "@type": "@id"
+    },
+    "requiresSubscription": "schema:requiresSubscription",
+    "Observation": "schema:Observation",
+    "PropertyValue": "schema:PropertyValue",
+    "observationAbout": {
+      "@id": "schema:observationAbout",
+      "@type": "@id"
+    },
+    "measurementTechnique": "schema:measurementTechnique",
+    "minValue": "schema:minValue",
+    "maxValue": "schema:maxValue",
+    "valueReference": {
+      "@id": "schema:valueReference",
+      "@type": "@id"
+    },
+    "image": {
+      "@id": "schema:image",
+      "@type": "@id"
+    },
+    "object": {
+      "@id": "schema:object",
+      "@type": "@id"
+    },
+    "result": {
+      "@id": "schema:result",
+      "@type": "@id"
+    },
+    "File": "https://schema.org/MediaObject",
+    "about": {
+      "@id": "schema:about",
+      "@type": "@id"
+    },
+    "actionStatus": "schema:actionStatus",
+    "additionalType": "schema:additionalType",
+    "agent": {
+      "@id": "schema:agent",
+      "@type": "@id"
+    },
+    "alternateName": "schema:alternateName",
+    "applicationCategory": "schema:applicationCategory",
+    "contentSize": "schema:contentSize",
+    "datePublished": {
+      "@id": "schema:datePublished",
+      "@type": "xsd:date"
+    },
+    "email": "schema:email",
+    "encodingFormat": "schema:encodingFormat",
+    "endTime": {
+      "@id": "schema:endTime",
+      "@type": "xsd:dateTime"
+    },
+    "exampleOfWork": {
+      "@id": "schema:exampleOfWork",
+      "@type": "@id"
+    },
+    "familyName": "schema:familyName",
+    "free": "schema:free",
+    "givenName": "schema:givenName",
+    "instrument": {
+      "@id": "schema:instrument",
+      "@type": "@id"
+    },
+    "license": {
+      "@id": "schema:license",
+      "@type": "@id"
+    },
+    "mainEntity": {
+      "@id": "schema:mainEntity",
+      "@type": "@id"
+    },
+    "programmingLanguage": {
+      "@id": "schema:programmingLanguage",
+      "@type": "@id"
+    },
+    "startTime": {
+      "@id": "schema:startTime",
+      "@type": "xsd:dateTime"
+    },
+    "url": {
+      "@id": "schema:url",
+      "@type": "@id"
+    },
+    "version": "schema:version",
+    "workExample": {
+      "@id": "schema:workExample",
+      "@type": "@id"
+    },
+    "used": {
+      "@id": "prov:used",
+      "@type": "@id"
+    },
+    "generated": {
+      "@id": "prov:generated",
+      "@type": "@id"
+    },
+    "endedAtTime": {
+      "@id": "prov:endedAtTime",
+      "@type": "xsd:dateTime"
+    }
+  }
+}

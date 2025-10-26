@@ -1,0 +1,20 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   318  100   318    0     0    572      0 --:--:-- --:--:-- --:--:--   572
+HTTP/1.1 302 Found
+Date: Sun, 26 Oct 2025 22:42:33 GMT
+Server: Apache/2.4.58 (Ubuntu)
+Access-Control-Allow-Origin: *
+Location: https://livepublication.org/interface-schemas/dpc/terms.ttl
+Content-Length: 318
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>302 Found</title>
+</head><body>
+<h1>Found</h1>
+<p>The document has moved <a href="https://livepublication.org/interface-schemas/dpc/terms.ttl">here</a>.</p>
+<hr>
+<address>Apache/2.4.58 (Ubuntu) Server at w3id.org Port 443</address>
+</body></html>

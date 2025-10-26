@@ -1,0 +1,102 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  3100  100  3100    0     0  79105      0 --:--:-- --:--:-- --:--:-- 79487
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sun, 26 Oct 2025 22:43:43 GMT
+Content-Type: text/html
+Content-Length: 3100
+Last-Modified: Sat, 25 Oct 2025 21:36:35 GMT
+Connection: keep-alive
+ETag: "68fd42e3-c1c"
+Access-Control-Allow-Origin: *
+Accept-Ranges: bytes
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Augustus Ellerm">
+<title>DPC Vocabulary</title>
+<base href="/interface-schemas/dpc/">
+<style>
+body { font-family: sans-serif; max-width: 50rem; margin: 2rem auto; padding: 0 1rem; }
+h1 { color: #2c3e50; }
+h2 { color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; margin-top: 2rem; }
+h3 { color: #555; font-size: 1.1rem; margin-top: 1.5rem; }
+code { background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 3px; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color: #666; }
+</style>
+</head>
+<body>
+<h1>Distributed Provenance Crate (DPC)</h1>
+<p>This page documents the DPC vocabulary and related artifacts.</p>
+<ul>
+  <li><a href="terms.ttl">Vocabulary (Turtle)</a></li>
+  <li><a href="shapes.ttl">SHACL Shapes</a></li>
+  <li><a href="contexts/v1.jsonld">JSON-LD Context v1</a></li>
+</ul>
+
+<hr>
+
+<h2>Vocabulary Terms</h2>
+
+<h2 id="HardwareRuntime">dpc:HardwareRuntime</h2>
+<p>
+  A snapshot of the hardware and environment configuration for an executed distributed step.
+  Bundles together all hardware components that together describe the runtime environment 
+  (node, VM, container host) in which the step ran.
+</p>
+
+<h3>Domain / Usage</h3>
+<ul>
+  <li>Type: <code>rdfs:Class</code></li>
+  <li>Contains: <code>dpc:HardwareComponent</code> instances via <code>dpc:component</code></li>
+  <li>Appears in Distributed Provenance Crates to capture hardware characteristics at runtime.</li>
+</ul>
+
+<h2 id="HardwareComponent">dpc:HardwareComponent</h2>
+<p>
+  A physical or virtual hardware element (e.g., CPU, GPU, RAM, storage volume, network interface) 
+  captured at the time a workflow step executed.
+</p>
+
+<h3>Domain / Usage</h3>
+<ul>
+  <li>Type: <code>rdfs:Class</code></li>
+  <li>Used in: <code>dpc:HardwareRuntime</code> via <code>dpc:component</code></li>
+  <li>May link to: <code>schema:Observation</code> via <code>dpc:performance</code> for metrics</li>
+  <li>Appears in Distributed Provenance Crates to describe individual hardware components.</li>
+</ul>
+
+<h2 id="component">dpc:component</h2>
+<p>
+  Links a <code>dpc:HardwareRuntime</code> to each <code>dpc:HardwareComponent</code> that was observed.
+  This property relates the runtime snapshot to its constituent hardware components.
+</p>
+
+<h3>Domain / Usage</h3>
+<ul>
+  <li>Type: <code>rdf:Property</code></li>
+  <li>Domain: <code>dpc:HardwareRuntime</code></li>
+  <li>Range: <code>dpc:HardwareComponent</code></li>
+</ul>
+
+<h2 id="performance">dpc:performance</h2>
+<p>
+  Links a <code>dpc:HardwareComponent</code> to an <code>schema:Observation</code> that reports 
+  metrics like CPU load, memory usage, I/O throughput, network bandwidth, etc.
+</p>
+
+<h3>Domain / Usage</h3>
+<ul>
+  <li>Type: <code>rdf:Property</code></li>
+  <li>Domain: <code>dpc:HardwareComponent</code></li>
+  <li>Range: <code>schema:Observation</code></li>
+</ul>
+
+<footer>
+  <p><small>Author: Augustus Ellerm | License: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></small></p>
+</footer>
+</body>
+</html>

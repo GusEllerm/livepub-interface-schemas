@@ -1,0 +1,20 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   331  100   331    0     0    597      0 --:--:-- --:--:-- --:--:--   597
+HTTP/1.1 302 Found
+Date: Sun, 26 Oct 2025 22:45:24 GMT
+Server: Apache/2.4.58 (Ubuntu)
+Access-Control-Allow-Origin: *
+Location: https://www.researchobject.org/ro-crate/specification/1.1/context.jsonld
+Content-Length: 331
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>302 Found</title>
+</head><body>
+<h1>Found</h1>
+<p>The document has moved <a href="https://www.researchobject.org/ro-crate/specification/1.1/context.jsonld">here</a>.</p>
+<hr>
+<address>Apache/2.4.58 (Ubuntu) Server at w3id.org Port 443</address>
+</body></html>
