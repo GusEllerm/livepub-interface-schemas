@@ -7,7 +7,8 @@ from _jsonld_utils import to_rdf_graph_from_jsonld
 VALID_CRATES = sorted(glob.glob("tests/crates/valid/*.json"))
 ALL_CRATES = sorted(glob.glob("tests/crates/**/*.json", recursive=True))
 
-PROFILE = "https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
+PROFILE_CANONICAL = "https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
+PROFILE_W3ID = "https://w3id.org/livepublication/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
 
 DSC = Namespace("https://livepublication.org/interface-schemas/dsc#")
 DPC = Namespace("https://livepublication.org/interface-schemas/dpc#")
@@ -21,7 +22,8 @@ def test_examples_include_profile_context(path):
     ctx = doc.get("@context", [])
     if isinstance(ctx, str):
         ctx = [ctx]
-    assert PROFILE in ctx, f"{path} is missing the profile context ({PROFILE})"
+    assert PROFILE_CANONICAL in ctx or PROFILE_W3ID in ctx, \
+        f"{path} is missing the profile context ({PROFILE_CANONICAL} or {PROFILE_W3ID})"
 
 
 @pytest.mark.parametrize("path", VALID_CRATES)

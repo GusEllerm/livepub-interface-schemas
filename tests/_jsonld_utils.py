@@ -4,6 +4,7 @@ from rdflib import Dataset, Graph
 from urllib.parse import urlparse
 
 LIVE_BASE = "https://livepublication.org/interface-schemas"
+W3ID_BASE = "https://w3id.org/livepublication/interface-schemas"
 
 # Online by default (fetch RO-Crate contexts from w3id). Set ROCRATE_ONLINE=0 to force offline vendor copies.
 ROCRATE_ONLINE = os.getenv("ROCRATE_ONLINE", "1") != "0"
@@ -45,8 +46,13 @@ def make_requests_loader(base_override: str):
 
     def loader(url, options=None):
         # 1) Rewrite your contexts to the local/remote base
+        #    Handle both LIVE_BASE and W3ID_BASE patterns
         if url.startswith(LIVE_BASE):
             mapped = url.replace(LIVE_BASE, base_override, 1)
+        elif url.startswith(W3ID_BASE):
+            # Rewrite w3id URLs to the canonical livepublication.org base, then to override
+            canonical = url.replace(W3ID_BASE, LIVE_BASE, 1)
+            mapped = canonical.replace(LIVE_BASE, base_override, 1)
 
         # 2) RO-Crate contexts
         elif url in ROCRATE_ALLOWED:
@@ -106,6 +112,10 @@ def to_rdf_graph_from_jsonld(doc: dict, base_override: str, rdflib_graph=None):
         if isinstance(item, str):
             if item.startswith(LIVE_BASE):
                 return item.replace(LIVE_BASE, base_override, 1)
+            if item.startswith(W3ID_BASE):
+                # Rewrite w3id URLs to canonical, then to override
+                canonical = item.replace(W3ID_BASE, LIVE_BASE, 1)
+                return canonical.replace(LIVE_BASE, base_override, 1)
             if not ROCRATE_ONLINE:
                 if item == "https://w3id.org/ro/crate/1.1/context":
                     return f"{base_override}/vendor/ro-crate/1.1/context.jsonld"
