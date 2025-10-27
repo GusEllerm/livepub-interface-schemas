@@ -2,7 +2,7 @@
     "@context": [
       "https://w3id.org/ro/crate/1.1/context",
       "https://w3id.org/ro/terms/workflow-run/context",
-      "https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
+      "https://w3id.org/livepublication/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
     ],
     "@graph": [
         {
