@@ -1,8 +1,5 @@
 # LivePublication Interface Schemas (local dev)
 
-**Author:** Augustus Ellerm (ael854@aucklanduni.ac.nz)
-**License:** CC BY 4.0
-
 This project provides **local development and validation** for the DPC (Distributed Provenance Crate) and DSC (Distributed Step Crate) vocabularies, JSON-LD contexts, SHACL shapes, and HTML landing pages.
 
 ## Quick start
@@ -68,7 +65,7 @@ Visit:
 - http://localhost:8000/interface-schemas/dpc/terms.ttl
 - http://localhost:8000/interface-schemas/dpc/shapes.ttl
 
-## Run full validation suite (pytest)
+## Run validation suite (pytest)
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
