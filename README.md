@@ -1,4 +1,4 @@
-# LivePublication Interface Schemas
+# LivePublication Interface Schemas [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18250033.svg)](https://doi.org/10.5281/zenodo.18250033)
 
 ## What this repository is
 This repository contains the LivePublication interface schemas used to describe distributed provenance-aware workflow executions. It provides the DPC (Distributed Provenance Crate) and DSC (Distributed Step Crate) vocabularies plus supporting artifacts for validation and publishing. These schemas are used in Chapter 5 (Distributed provenance-aware WMS). 
