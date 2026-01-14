@@ -1,0 +1,26 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "LivePublication Interface Schemas",
+  "description": "Schema and profile artifacts for LivePublication interface outputs, including vocabularies (e.g., DPC/DSC), SHACL shapes, and JSON-LD contexts for describing distributed provenance-aware workflow execution.",
+  "codeRepository": "https://github.com/GusEllerm/livepub-interface-schemas",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "version": "0.1.0",
+  "author": [
+    {
+      "@id": "https://orcid.org/0000-0001-8260-231X",
+      "@type": "Person",
+      "givenName": "Augustus",
+      "familyName": "Ellerm"
+    }
+  ],
+  "keywords": [
+    "LivePublication",
+    "RO-Crate",
+    "provenance",
+    "DPC",
+    "DSC",
+    "SHACL",
+    "JSON-LD"
+  ]
+}

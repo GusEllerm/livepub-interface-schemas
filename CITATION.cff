@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use these schemas, please cite them as below."
+title: "LivePublication Interface Schemas"
+authors:
+  - family-names: "Ellerm"
+    given-names: "Augustus"
+    orcid: "https://orcid.org/0000-0001-8260-231X"
+repository-code: "https://github.com/GusEllerm/livepub-interface-schemas"
+abstract: "LivePublication interface schemas defining DPC/DSC vocabularies, SHACL shapes, and JSON-LD contexts for distributed provenance-aware workflow execution."
+license: "CC-BY-4.0"
+version: "0.1.0"
+preferred-citation:
+  type: "software"
+  title: "LivePublication Interface Schemas"
+  authors:
+    - family-names: "Ellerm"
+      given-names: "Augustus"
+      orcid: "https://orcid.org/0000-0001-8260-231X"
+

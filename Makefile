@@ -23,7 +23,7 @@ WEB_ROOT ?= /var/www/livepublication
 .PHONY: help init venv install serve serve-bg stop urls test smoke clean superclean
 .PHONY: test-remote smoke-remote deploy-rsync build-profile check-profile test-online test-offline
 .PHONY: test-crates test-policy debug-nq audit-vocab audit-vocab-offline
-.PHONY: audit-sparql audit-shapes coverage-all
+.PHONY: audit-sparql audit-shapes coverage-all validate-metadata
 
 help:
 	@echo "Targets:"
@@ -41,6 +41,7 @@ help:
 	@echo "  make test-remote BASE_URL=https://example.org/interface-schemas"
 	@echo "  make smoke-remote BASE_URL=https://example.org/interface-schemas"
 	@echo "  make deploy-rsync SSH_HOST=user@host [WEB_ROOT=/var/www/livepublication]"
+	@echo "  make validate-metadata  - validate citation/metadata files"
 
 # --- Setup ---
 init: venv install
@@ -74,6 +75,9 @@ urls:
 # --- Tests ---
 test: install
 	@$(PYTEST) -q
+
+validate-metadata:
+	@$(PY) scripts/validate_metadata.py
 
 # Explicitly run tests with online RO-Crate fetch
 test-online:

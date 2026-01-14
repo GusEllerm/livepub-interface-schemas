@@ -1,0 +1,28 @@
+{
+  "title": "LivePublication Interface Schemas",
+  "description": "LivePublication interface schemas covering DPC/DSC vocabularies, SHACL shapes, and JSON-LD contexts for distributed provenance-aware workflow execution.",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "Ellerm, Augustus",
+      "orcid": "0000-0001-8260-231X"
+    }
+  ],
+  "license": "CC-BY-4.0",
+  "keywords": [
+    "LivePublication",
+    "RO-Crate",
+    "provenance",
+    "DPC",
+    "DSC",
+    "SHACL",
+    "JSON-LD"
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/GusEllerm/livepub-interface-schemas"
+    }
+  ]
+}
+

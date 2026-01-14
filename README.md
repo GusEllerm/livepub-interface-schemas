@@ -1,6 +1,33 @@
-# LivePublication Interface Schemas (local dev)
+# LivePublication Interface Schemas
 
-This project provides **local development and validation** for the DPC (Distributed Provenance Crate) and DSC (Distributed Step Crate) vocabularies, JSON-LD contexts, SHACL shapes, and HTML landing pages.
+## What this repository is
+This repository contains the LivePublication interface schemas used to describe distributed provenance-aware workflow executions. It provides the DPC (Distributed Provenance Crate) and DSC (Distributed Step Crate) vocabularies plus supporting artifacts for validation and publishing. These schemas are used in Chapter 5 (Distributed provenance-aware WMS). 
+
+## What's included
+- DPC vocabulary (Turtle), SHACL shapes, JSON-LD context, and landing page
+- DSC vocabulary (Turtle), SHACL shapes, JSON-LD context, and landing page
+- Profile context `lp-dscdpc` that merges DPC + DSC for RO-Crate use
+- Schema catalog page for interface-schemas
+- Example crates and validation tests
+- Vendored RO-Crate contexts for offline tests
+
+## Where the published schemas live
+- https://w3id.org/livepublication/interface-schemas/
+- https://w3id.org/livepublication/interface-schemas/dpc/
+- https://w3id.org/livepublication/interface-schemas/dsc/
+- https://w3id.org/livepublication/interface-schemas/contexts/lp-dscdpc/v1.jsonld
+
+## How to cite
+Cite this repository as: "LivePublication Interface Schemas". DOI: (to be assigned after Zenodo release). The Zenodo DOI will be minted on release and should replace the placeholder in metadata files.
+
+## License
+CC BY 4.0 (see `LICENSE`).
+
+## Metadata validation
+Run `python scripts/validate_metadata.py` (or `make validate-metadata`) to check required metadata files, JSON/YAML parsing, and cross-file consistency.
+
+## RO-Crate regeneration
+Run `python scripts/generate_ro_crate.py` to regenerate `ro-crate-metadata.json`.
 
 ## Quick start
 

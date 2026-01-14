@@ -1,0 +1,133 @@
+{
+    "@context": "https://w3id.org/ro/crate/1.1/context",
+    "@graph": [
+        {
+            "@id": "./",
+            "@type": "Dataset",
+            "author": {
+                "@id": "#https://orcid.org/0000-0001-8260-231X"
+            },
+            "datePublished": "2026-01-14T21:37:00+00:00",
+            "description": "LivePublication interface schemas covering DPC/DSC vocabularies, SHACL shapes, and JSON-LD contexts for distributed provenance-aware workflow execution.",
+            "hasPart": [
+                {
+                    "@id": "interface-schemas/index.html"
+                },
+                {
+                    "@id": "interface-schemas/dpc/index.html"
+                },
+                {
+                    "@id": "interface-schemas/dpc/terms.ttl"
+                },
+                {
+                    "@id": "interface-schemas/dpc/shapes.ttl"
+                },
+                {
+                    "@id": "interface-schemas/dpc/contexts/v1.jsonld"
+                },
+                {
+                    "@id": "interface-schemas/dsc/index.html"
+                },
+                {
+                    "@id": "interface-schemas/dsc/terms.ttl"
+                },
+                {
+                    "@id": "interface-schemas/dsc/shapes.ttl"
+                },
+                {
+                    "@id": "interface-schemas/dsc/contexts/v1.jsonld"
+                },
+                {
+                    "@id": "interface-schemas/contexts/lp-dscdpc/v1.jsonld"
+                }
+            ],
+            "license": "https://creativecommons.org/licenses/by/4.0/",
+            "mainEntity": {
+                "@id": "#livepublication-interface-schemas"
+            },
+            "name": "LivePublication Interface Schemas",
+            "version": "0.1.0"
+        },
+        {
+            "@id": "ro-crate-metadata.json",
+            "@type": "CreativeWork",
+            "about": {
+                "@id": "./"
+            },
+            "conformsTo": {
+                "@id": "https://w3id.org/ro/crate/1.1"
+            }
+        },
+        {
+            "@id": "#https://orcid.org/0000-0001-8260-231X",
+            "@type": "Person",
+            "name": "Augustus Ellerm"
+        },
+        {
+            "@id": "#livepublication-interface-schemas",
+            "@type": "CreativeWork",
+            "description": "LivePublication interface schemas covering DPC/DSC vocabularies, SHACL shapes, and JSON-LD contexts for distributed provenance-aware workflow execution.",
+            "name": "LivePublication Interface Schemas"
+        },
+        {
+            "@id": "interface-schemas/index.html",
+            "@type": "File",
+            "description": "Landing page for the LivePublication interface schemas.",
+            "encodingFormat": "text/html"
+        },
+        {
+            "@id": "interface-schemas/dpc/index.html",
+            "@type": "File",
+            "description": "DPC vocabulary landing page.",
+            "encodingFormat": "text/html"
+        },
+        {
+            "@id": "interface-schemas/dpc/terms.ttl",
+            "@type": "File",
+            "description": "DPC vocabulary (Turtle).",
+            "encodingFormat": "text/turtle"
+        },
+        {
+            "@id": "interface-schemas/dpc/shapes.ttl",
+            "@type": "File",
+            "description": "DPC SHACL shapes.",
+            "encodingFormat": "text/turtle"
+        },
+        {
+            "@id": "interface-schemas/dpc/contexts/v1.jsonld",
+            "@type": "File",
+            "description": "DPC JSON-LD context v1.",
+            "encodingFormat": "application/ld+json"
+        },
+        {
+            "@id": "interface-schemas/dsc/index.html",
+            "@type": "File",
+            "description": "DSC vocabulary landing page.",
+            "encodingFormat": "text/html"
+        },
+        {
+            "@id": "interface-schemas/dsc/terms.ttl",
+            "@type": "File",
+            "description": "DSC vocabulary (Turtle).",
+            "encodingFormat": "text/turtle"
+        },
+        {
+            "@id": "interface-schemas/dsc/shapes.ttl",
+            "@type": "File",
+            "description": "DSC SHACL shapes.",
+            "encodingFormat": "text/turtle"
+        },
+        {
+            "@id": "interface-schemas/dsc/contexts/v1.jsonld",
+            "@type": "File",
+            "description": "DSC JSON-LD context v1.",
+            "encodingFormat": "application/ld+json"
+        },
+        {
+            "@id": "interface-schemas/contexts/lp-dscdpc/v1.jsonld",
+            "@type": "File",
+            "description": "Merged DPC/DSC profile JSON-LD context (lp-dscdpc) v1.",
+            "encodingFormat": "application/ld+json"
+        }
+    ]
+}
