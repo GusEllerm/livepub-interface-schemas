@@ -9,6 +9,7 @@
             },
             "datePublished": "2026-01-14T21:37:00+00:00",
             "description": "LivePublication interface schemas covering DPC/DSC vocabularies, SHACL shapes, and JSON-LD contexts for distributed provenance-aware workflow execution.",
+            "identifier": {"@id": "https://doi.org/10.5281/zenodo.18249941"},
             "hasPart": [
                 {
                     "@id": "interface-schemas/index.html"

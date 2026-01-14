@@ -18,7 +18,7 @@ This repository contains the LivePublication interface schemas used to describe 
 - https://w3id.org/livepublication/interface-schemas/contexts/lp-dscdpc/v1.jsonld
 
 ## How to cite
-Cite this repository as: "LivePublication Interface Schemas". DOI: (to be assigned after Zenodo release). The Zenodo DOI will be minted on release and should replace the placeholder in metadata files.
+Cite this repository as: "LivePublication Interface Schemas". DOI: 10.5281/zenodo.18249941. 
 
 ## License
 CC BY 4.0 (see `LICENSE`).
