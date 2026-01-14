@@ -23,12 +23,6 @@ Cite this repository as: "LivePublication Interface Schemas". DOI: 10.5281/zenod
 ## License
 CC BY 4.0 (see `LICENSE`).
 
-## Metadata validation
-Run `python scripts/validate_metadata.py` (or `make validate-metadata`) to check required metadata files, JSON/YAML parsing, and cross-file consistency.
-
-## RO-Crate regeneration
-Run `python scripts/generate_ro_crate.py` to regenerate `ro-crate-metadata.json`.
-
 ## Quick start
 
 ```bash
@@ -99,17 +93,6 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
 pytest -q
 ```
-
-The test suite validates:
-
-- ✅ HTTP 200s for all artifacts
-- ✅ Correct MIME types (`application/ld+json`, `text/turtle`, `text/html`)
-- ✅ CORS headers (`Access-Control-Allow-Origin: *`)
-- ✅ Strong caching for versioned contexts (`Cache-Control: public, max-age=31536000, immutable`)
-- ✅ JSON-LD expansion and compaction semantics
-- ✅ Turtle parsing and ontology structure
-- ✅ SHACL validation against sample data
-- ✅ HTML link resolution (no broken links)
 
 ## Makefile shortcuts
 
@@ -355,45 +338,6 @@ The audit includes a contract test (`test_valid_crates_vocab_contract`) that **f
 1. Any `http://schema.org/*` predicates are found (must use HTTPS)
 2. No native XSD types are present for booleans/numbers
 
-### Current inventory snapshot
-
-Based on the latest audit of `tests/crates/{valid,invalid}`:
-
-**Top 5 namespaces:**
-
-1. `https://schema.org/`: 1,423 predicates 
-2. `http://www.w3.org/1999/02/22-rdf-syntax-ns#`: 507 (rdf:type)
-3. `https://livepublication.org/interface-schemas/dpc#`: 31
-4. `http://purl.org/dc/terms/`: 14 (conformsTo)
-5. `https://w3id.org/ro/terms/workflow-run#`: 12
-
-**Top 10 terms:**
-
-1. `rdf:type`: 507
-2. `schema:name`: 439
-3. `schema:value`: 338
-4. `schema:additionalProperty`: 330
-5. `schema:hasPart`: 53
-6. `schema:encodingFormat`: 29
-7. `schema:description`: 28
-8. `dpc:component`: 24
-9. `schema:object`: 15
-10. `dcterms:conformsTo`: 14
-
-**Literal types (native XSD):**
-
-- `xsd:integer`: 18
-- `xsd:double`: 17
-- `xsd:boolean`: 6
-- `xsd:date`: 6
-- `xsd:dateTime`: 2
-
-**Contract status:**
-
-- ✅ Zero `http://schema.org/*` predicates
-- ✅ Native XSD types present
-- ✅ All namespaces recognized
-
 ### Allowed namespaces
 
 The audit allows predicates from these namespaces:
@@ -411,19 +355,6 @@ The audit allows predicates from these namespaces:
 - `https://bioschemas.org/` (Bioschemas)
 
 Any other namespace triggers a warning in the report.
-
-### HTTPS enforcement
-
-The profile context (`lp-dscdpc/v1.jsonld`) explicitly overrides 23+ RO-Crate terms to force HTTPS Schema.org IRIs:
-
-```
-about, actionStatus, additionalType, agent, alternateName, applicationCategory,
-contentSize, datePublished, email, encodingFormat, endTime, exampleOfWork,
-familyName, givenName, instrument, license, mainEntity, programmingLanguage,
-startTime, url, version, workExample, etc.
-```
-
-This ensures consistency: even when RO-Crate contexts expand terms to `http://schema.org/*`, our profile re-maps them to `https://schema.org/*`.
 
 ## JSON-LD → RDF pipeline
 
@@ -450,10 +381,6 @@ make test-online   # or just: make test
 ```bash
 make test-offline
 ```
-
-Toggle is controlled by the ROCRATE_ONLINE env var (1 = online, 0 = offline).
-In both modes, our own contexts under https://livepublication.org/interface-schemas/...
-are rewritten to the local dev server (or BASE_URL for remote tests).
 
 ## Profile context (lp-dscdpc)
 
@@ -504,8 +431,6 @@ Example:
 
 ## Diagnostics & audits
 
-The repository includes comprehensive diagnostic tools to track vocabulary usage, enforce policy, and monitor drift over time.
-
 ### Quick reference
 
 ```bash
@@ -516,7 +441,7 @@ make audit-shapes        # SHACL shape coverage report
 make coverage-all        # Run all diagnostic audits
 ```
 
-All artifacts land in `.artifacts/` (git-ignored).
+All artifacts land in `.artifacts/` 
 
 ### 1. Vocabulary inventory (non-failing)
 
@@ -611,50 +536,6 @@ make audit-shapes
 [COVERAGE] Zero-coverage shapes: 3
   - http://example.org/shapes#UnusedShape
   - ...
-```
-
-### 4. Vocabulary baseline drift (failing)
-
-**What it does:**
-
-- Compares current vocabulary against committed baseline
-- Catches unexpected namespace/term changes
-- Enforces stability for critical terms
-
-**Baseline:**
-
-- `tests/fixtures/vocab_baseline.json` (committed)
-- Generated from current crates; reviewed and committed
-
-**Run:**
-
-```bash
-pytest tests/test_vocab_baseline.py
-```
-
-**Failure conditions:**
-
-- New namespaces appear (not in allowlist)
-- `http://schema.org/*` reappears
-- Critical terms disappear or change >20%
-
-**Update baseline:**
-
-```bash
-VOCAB_BASELINE_UPDATE=1 pytest tests/test_vocab_baseline.py
-git diff tests/fixtures/vocab_baseline.json  # Review changes
-git add tests/fixtures/vocab_baseline.json
-git commit -m "chore: update vocab baseline"
-```
-
-### Running diagnostics offline
-
-All audit targets support offline validation (vendored RO-Crate contexts):
-
-```bash
-ROCRATE_ONLINE=0 make audit-vocab
-ROCRATE_ONLINE=0 make audit-sparql
-ROCRATE_ONLINE=0 make coverage-all
 ```
 
 ### CI integration
