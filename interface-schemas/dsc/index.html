@@ -48,6 +48,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   <li>Update canonical DSC examples to declare <code>conformsTo</code> for this profile.</li>
 </ul>
 <p><strong>Conformance declaration:</strong> Conforming DSC crates MUST declare <code>conformsTo</code> on the Root Data Entity (<code>"./"</code>) including this profile URI.</p>
+<p>In JSON-LD, <code>conformsTo</code> expands to <code>schema:conformsTo</code> using the DSC context; this page uses the compact <code>conformsTo</code> form for readability.</p>
 <p>This is declared in <code>ro-crate-metadata.json</code> on the entity with <code>@id</code> <code>"./"</code>.</p>
 
 <h3>Audience</h3>
@@ -87,21 +88,21 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <table>
   <thead>
     <tr>
-      <th>Requirement</th>
-      <th>Level</th>
+      <th>Conformance</th>
+      <th>Required?</th>
       <th>Where</th>
       <th>Notes</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Root Data Entity (<code>./</code>) declares <code>schema:conformsTo</code> with the RO-Crate spec URI and DSC profile URI</td>
+      <td>Root Data Entity (<code>./</code>) declares <code>conformsTo</code> (expands to <code>schema:conformsTo</code> under the DSC JSON-LD context) with the RO-Crate spec URI and DSC profile URI</td>
       <td>MUST</td>
       <td>Root Data Entity</td>
       <td>Use the RO-Crate version your crate targets (e.g., <code>https://w3id.org/ro/crate/1.1</code>).</td>
     </tr>
     <tr>
-      <td>Root Data Entity references a DSC step descriptor (prefer <code>mainEntity</code>)</td>
+      <td>Root Data Entity references a DSC step descriptor (use <code>mainEntity</code>)</td>
       <td>MUST</td>
       <td>Root Data Entity</td>
       <td>DSC step descriptor is the primary provenance focus.</td>
@@ -356,7 +357,9 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <h3>How to validate a DSC crate</h3>
 <p>Use SHACL with the combined shape set (DSC + DPC) for full validation.</p>
 <pre><code># Combined validation (recommended)
-pyshacl -s dsc/shapes.ttl -s dpc/shapes.ttl -df json-ld -f human ro-crate-metadata.json
+cat dsc/shapes.ttl dpc/shapes.ttl > combined-shapes.ttl
+pyshacl -s combined-shapes.ttl -df json-ld -f human ro-crate-metadata.json
+rm combined-shapes.ttl
 
 # DSC-only validation (limited)
 pyshacl -s dsc/shapes.ttl -df json-ld -f human ro-crate-metadata.json</code></pre>
