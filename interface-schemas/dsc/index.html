@@ -42,6 +42,8 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   <li>Archive the release via Zenodo.</li>
   <li>Update canonical DSC examples to declare <code>conformsTo</code> for this profile.</li>
 </ul>
+<p><strong>Conformance declaration:</strong> Conforming DSC crates MUST declare <code>conformsTo</code> on the Root Data Entity (<code>"./"</code>) including this profile URI.</p>
+<p>This is declared in <code>ro-crate-metadata.json</code> on the entity with <code>@id</code> <code>"./"</code>.</p>
 
 <h3>Audience</h3>
 <p>
@@ -153,12 +155,12 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
       <td>Step identity used to align the DSC with an orchestrated workflow record.</td>
       <td>
         <ul>
-          <li><code>position</code> (step order; used here for the WMS task UUID alignment)</li>
-          <li><code>identifier</code> (optional alternative for WMS task UUID)</li>
+          <li><code>position</code> (step order, integer)</li>
+          <li><code>identifier</code> (WMS task UUID)</li>
           <li><code>sourceOrganization</code> (optional)</li>
         </ul>
       </td>
-      <td>MUST (position), MAY (identifier)</td>
+      <td>MUST (position), SHOULD (identifier)</td>
     </tr>
     <tr>
       <td><code>HardwareRuntime</code></td>
@@ -215,6 +217,26 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
     </tr>
   </tbody>
 </table>
+
+<h3>Validated constraints vs guidance</h3>
+<p><strong>SHACL-validated constraints (machine-validated)</strong></p>
+<ul>
+  <li><code>DistributedStep</code> MUST have at least one of <code>object</code> or <code>result</code>.</li>
+  <li><code>DistributedStep</code> MUST link to <code>HardwareRuntime</code> via <code>hasPart</code>.</li>
+  <li><code>HowToStep</code> MUST have <code>position</code> (integer).</li>
+  <li><code>HardwareRuntime</code> MUST link to one or more <code>HardwareComponent</code> via <code>component</code>.</li>
+  <li><code>HardwareComponent</code> MUST have <code>name</code>.</li>
+  <li><code>Observation</code> MUST link to the component via <code>observationAbout</code> if present.</li>
+  <li>If present, <code>prov:startedAtTime</code> and <code>prov:endedAtTime</code> MUST be <code>xsd:dateTime</code>.</li>
+</ul>
+<p><strong>Project conventions (guidance; not fully machine-validated)</strong></p>
+<ul>
+  <li>DSC step descriptor SHOULD use the recommended typing (CreateAction/HowTo/File/Schedule/ActionAccessSpecification + DistributedStep).</li>
+  <li>WMS task UUID SHOULD be recorded in <code>HowToStep.identifier</code> for stable alignment.</li>
+  <li>Use stable local <code>@id</code> patterns for components and observations (see naming guidance below).</li>
+  <li>Prefer distributed per-step DSC crates, later linked into a parent workflow crate.</li>
+  <li>Include a Profile contextual entity for this profile URI when possible.</li>
+</ul>
 
 <h3>Identifier and naming conventions</h3>
 <ul>
@@ -279,7 +301,8 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
     {
       "@id": "#wms-step-1",
       "@type": "HowToStep",
-      "position": "b6f9f35e-8ee0-4b3a-a264-2e51a85d0c1e"
+      "position": 1,
+      "identifier": "b6f9f35e-8ee0-4b3a-a264-2e51a85d0c1e"
     },
     {
       "@id": "#runtime-1",
@@ -323,10 +346,9 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   execution.
 </p>
 <p>
-  The thesis places the WMS task UUID in <code>HowToStep.position</code> for step alignment. The
-  current DSC SHACL shapes define <code>position</code> as an integer and allow a string
-  <code>identifier</code>; implementations needing strict datatype validation may use
-  <code>identifier</code> in addition to <code>position</code> until the shapes are aligned.
+  The WMS task UUID is recorded in <code>HowToStep.identifier</code> to align with the SHACL
+  expectation that <code>position</code> is an integer step order. This preserves a stable place
+  for the WMS task identifier while keeping datatype validation intact.
 </p>
 
 <h3>How to cite / archive</h3>

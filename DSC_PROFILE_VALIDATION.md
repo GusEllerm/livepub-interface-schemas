@@ -1,6 +1,6 @@
 # DSC Profile Validation Report
 
-Version and timestamp: 2026-01-16T07:03:12Z
+Version and timestamp: 2026-01-16T07:16:32Z
 
 ## Files validated
 - `interface-schemas/dsc/index.html`
@@ -33,28 +33,30 @@ Key properties/types used in tables, normative statements, and examples:
 - `Profile` contextual entity: ⚠️ not defined in DSC/DPC artifacts; mentioned as guidance
 
 ### 3) Thesis correction: WMS task UUID placement
-- Text requirements: ✅ now point to `HowToStep.position`
-- Tables: ✅ `position` identified for WMS UUID alignment
-- Examples: ✅ UUID placed in `HowToStep.position`
-- Note: ⚠️ `dsc/shapes.ttl` defines `position` as integer; UUID placement is a thesis-driven convention (see Notes on page)
+- Text requirements: ✅ UUID stored in `HowToStep.identifier`
+- Tables: ✅ `position` reserved for integer order; `identifier` used for WMS UUID
+- Examples: ✅ UUID placed in `HowToStep.identifier`
+- Why: This aligns with SHACL expectations for `position` and preserves a stable place for the WMS task identifier.
 
 ## Observed issues (before changes)
-- WMS task UUID guidance and example used `identifier` instead of `position`.
+- WMS task UUID guidance and example used `position` instead of `identifier`.
 - Draft banner lacked a stabilisation plan.
 - Minimal example did not include `contexts/v1.jsonld` in `@context`.
 - Recommended typing conventions were not explicit.
+- No explicit "validated vs guidance" separation.
+- Conformance declaration was not prominent.
 
 ## Changes applied
 - Added a draft stabilisation plan bullet list.
-- Updated WMS task UUID guidance to use `HowToStep.position`, adjusted tables and example.
+- Updated WMS task UUID guidance to use `HowToStep.identifier`, adjusted tables and example.
 - Added recommended typing subsection and expanded step descriptor types in the example.
 - Added `contexts/v1.jsonld` to the example `@context`.
-- Documented datatype mismatch for `position` vs UUID in the Notes section.
+- Added a "validated vs guidance" section to clarify SHACL enforcement.
+- Added a prominent conformance declaration callout near the top.
 
 ## Open questions / remaining risks
-- `HowToStep.position` is constrained to integers in `dsc/shapes.ttl` but used for UUID alignment per thesis; shapes may need revision or dual encoding (`identifier`) in future.
 - `MediaSubscription`/`authenticator` are not defined in the DSC/DPC artifacts; consider adding to contexts/shapes or treating as out-of-scope.
 - `Profile` contextual entity is referenced as guidance but not defined in DSC/DPC artifacts.
 
 ## Next recommended step
-- Update at least one canonical DSC example crate to include `conformsTo` with the DSC profile URI and to demonstrate UUID placement in `HowToStep.position`.
+- Update at least one canonical DSC example crate to include `conformsTo` with the DSC profile URI and to demonstrate UUID placement in `HowToStep.identifier`.
