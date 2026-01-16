@@ -11,6 +11,11 @@ h1 { color: #2c3e50; }
 h2 { color: #34495e; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; margin-top: 2rem; }
 h3 { color: #555; font-size: 1.1rem; margin-top: 1.5rem; }
 code { background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 3px; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { border: 1px solid #ddd; padding: 0.5rem 0.7rem; vertical-align: top; text-align: left; }
+th { background: #f8f8f8; }
+tbody tr:nth-child(even) { background: #fcfcfc; }
+td ul { margin: 0.3rem 0 0.3rem 1.1rem; padding: 0; }
 footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color: #666; }
 </style>
 </head>
@@ -19,9 +24,9 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <p>This page documents the DSC vocabulary and related artifacts.</p>
 <p><strong>Profile:</strong> <a href="#profile-1.0">DSC Profile v1.0</a></p>
 <ul>
-  <li><a href="terms.ttl">Vocabulary (Turtle)</a></li>
-  <li><a href="shapes.ttl">SHACL Shapes</a></li>
-  <li><a href="contexts/v1.jsonld">JSON-LD Context v1</a></li>
+  <li><a href="https://livepublication.org/interface-schemas/dsc/terms.ttl">Vocabulary (Turtle)</a></li>
+  <li><a href="https://livepublication.org/interface-schemas/dsc/shapes.ttl">SHACL Shapes</a></li>
+  <li><a href="https://livepublication.org/interface-schemas/dsc/contexts/v1.jsonld">JSON-LD Context v1</a></li>
 </ul>
 
 <hr>
@@ -116,104 +121,182 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   </tbody>
 </table>
 
-<h4>Core entity requirements</h4>
+<h4>Root Data Entity (Dataset, <code>@id</code>: <code>"./"</code>)</h4>
 <table>
   <thead>
     <tr>
-      <th>Entity / Type</th>
-      <th>Purpose</th>
-      <th>Required links / properties</th>
-      <th>Level</th>
+      <th>Property</th>
+      <th>Required?</th>
+      <th>Expected value range</th>
+      <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Root Data Entity (<code>./</code>, <code>Dataset</code>)</td>
-      <td>Crate root that declares conformance and points to the DSC step.</td>
-      <td>
-        <ul>
-          <li><code>conformsTo</code> (RO-Crate URI + DSC profile URI)</li>
-          <li><code>mainEntity</code> linking to the DSC step descriptor</li>
-        </ul>
-      </td>
+      <td><code>conformsTo</code></td>
       <td>MUST</td>
+      <td>URI</td>
+      <td>Include the RO-Crate spec URI and the DSC profile URI.</td>
     </tr>
     <tr>
-      <td>DSC Step Descriptor (e.g., <code>DistributedStep</code> with <code>CreateAction</code>)</td>
-      <td>Represents the tool execution and its results.</td>
-      <td>
-        <ul>
-          <li><code>step</code> linking to a <code>HowToStep</code></li>
-          <li><code>hasPart</code> linking to a <code>HardwareRuntime</code></li>
-          <li><code>object</code> and/or <code>result</code> for inputs/outputs</li>
-        </ul>
-      </td>
-      <td>MUST (links), SHOULD (action typing)</td>
-    </tr>
-    <tr>
-      <td><code>HowToStep</code></td>
-      <td>Step identity used to align the DSC with an orchestrated workflow record.</td>
-      <td>
-        <ul>
-          <li><code>position</code> (step order, integer)</li>
-          <li><code>identifier</code> (WMS task UUID)</li>
-          <li><code>sourceOrganization</code> (optional)</li>
-        </ul>
-      </td>
-      <td>MUST (position), SHOULD (identifier)</td>
-    </tr>
-    <tr>
-      <td><code>HardwareRuntime</code></td>
-      <td>Runtime environment snapshot for the execution.</td>
-      <td>
-        <ul>
-          <li><code>component</code> linking to one or more <code>HardwareComponent</code> entities</li>
-        </ul>
-      </td>
+      <td><code>mainEntity</code></td>
       <td>MUST</td>
+      <td><code>dsc:DistributedStep</code> (URI)</td>
+      <td>Points to the DSC step descriptor.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Distributed Step Descriptor (<code>dsc:DistributedStep</code>)</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Required?</th>
+      <th>Expected value range</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>step</code></td>
+      <td>MUST</td>
+      <td><code>HowToStep</code> (URI)</td>
+      <td>Links the step descriptor to the workflow step identity.</td>
     </tr>
     <tr>
-      <td><code>HardwareComponent</code></td>
-      <td>Individual hardware elements (CPU, RAM, GPU, storage, etc.).</td>
-      <td>
-        <ul>
-          <li><code>name</code></li>
-          <li><code>performance</code> linking to <code>Observation</code> (optional)</li>
-        </ul>
-      </td>
-      <td>MUST (name), MAY (performance)</td>
+      <td><code>hasPart</code></td>
+      <td>MUST</td>
+      <td><code>dpc:HardwareRuntime</code> (URI)</td>
+      <td>Links to the runtime environment snapshot.</td>
     </tr>
     <tr>
-      <td><code>Observation</code> (performance)</td>
-      <td>Optional performance measurements for a component.</td>
-      <td>
-        <ul>
-          <li><code>observationAbout</code> linking to the component</li>
-          <li><code>measurementTechnique</code> (optional)</li>
-        </ul>
-      </td>
-      <td>MAY (if present, <code>observationAbout</code> is required)</td>
-    </tr>
-    <tr>
-      <td><code>MediaSubscription</code></td>
-      <td>Optional access conditions for gated executions.</td>
-      <td>
-        <ul>
-          <li><code>authenticator</code> linking to an <code>Organization</code> (optional)</li>
-        </ul>
-      </td>
+      <td><code>object</code></td>
       <td>MAY</td>
+      <td><code>File</code> or <code>PropertyValue</code> (URI)</td>
+      <td>Inputs used by the step.</td>
     </tr>
     <tr>
-      <td><code>Organization</code></td>
-      <td>Organization used for source or authentication context.</td>
-      <td>
-        <ul>
-          <li><code>sourceOrganization</code> from <code>HowToStep</code></li>
-          <li><code>authenticator</code> from <code>MediaSubscription</code> (optional)</li>
-        </ul>
-      </td>
+      <td><code>result</code></td>
       <td>MAY</td>
+      <td><code>File</code> or <code>PropertyValue</code> (URI)</td>
+      <td>Outputs or results produced by the step.</td>
+    </tr>
+    <tr>
+      <td><code>prov:startedAtTime</code></td>
+      <td>MAY</td>
+      <td>DateTime</td>
+      <td>Start time (if recorded).</td>
+    </tr>
+    <tr>
+      <td><code>prov:endedAtTime</code></td>
+      <td>MAY</td>
+      <td>DateTime</td>
+      <td>End time (if recorded).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>HowToStep (workflow step alignment)</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Required?</th>
+      <th>Expected value range</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>position</code></td>
+      <td>MUST</td>
+      <td>Integer</td>
+      <td>Step order or index within the workflow.</td>
+    </tr>
+    <tr>
+      <td><code>identifier</code></td>
+      <td>SHOULD</td>
+      <td>Text</td>
+      <td>WMS task UUID used to align with orchestrated workflow records.</td>
+    </tr>
+    <tr>
+      <td><code>sourceOrganization</code></td>
+      <td>MAY</td>
+      <td><code>Organization</code> (URI)</td>
+      <td>Organization associated with the step.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>HardwareRuntime (DPC)</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Required?</th>
+      <th>Expected value range</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>component</code></td>
+      <td>MUST</td>
+      <td><code>dpc:HardwareComponent</code> (URI)</td>
+      <td>Hardware components captured in the runtime snapshot.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>HardwareComponent (DPC)</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Required?</th>
+      <th>Expected value range</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>name</code></td>
+      <td>MUST</td>
+      <td>Text</td>
+      <td>Human-readable component name (CPU, RAM, GPU, etc.).</td>
+    </tr>
+    <tr>
+      <td><code>performance</code></td>
+      <td>MAY</td>
+      <td><code>Observation</code> (URI)</td>
+      <td>Optional performance observations.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4>Observation (DPC)</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Required?</th>
+      <th>Expected value range</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>observationAbout</code></td>
+      <td>MUST</td>
+      <td><code>dpc:HardwareComponent</code> (URI)</td>
+      <td>Links the observation to the component it measures.</td>
+    </tr>
+    <tr>
+      <td><code>measurementTechnique</code></td>
+      <td>MAY</td>
+      <td>Text</td>
+      <td>Measurement method or tool used.</td>
     </tr>
   </tbody>
 </table>
@@ -261,9 +344,9 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <h3>Validation and artifacts</h3>
 <p>
   DSC vocabulary and validation artifacts are available as:
-  <a href="terms.ttl">terms.ttl</a>,
-  <a href="shapes.ttl">shapes.ttl</a>, and
-  <a href="contexts/v1.jsonld">contexts/v1.jsonld</a>,
+  <a href="https://livepublication.org/interface-schemas/dsc/terms.ttl">terms.ttl</a>,
+  <a href="https://livepublication.org/interface-schemas/dsc/shapes.ttl">shapes.ttl</a>, and
+  <a href="https://livepublication.org/interface-schemas/dsc/contexts/v1.jsonld">contexts/v1.jsonld</a>,
   <a href="https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld">contexts/lp-dscdpc/v1.jsonld</a>.
   SHACL shapes can validate core structural requirements for DSC crates, while some guidance
   (such as identifier patterns) is not enforceable by SHACL.
@@ -272,10 +355,10 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <h3>How to validate a DSC crate</h3>
 <p>Use SHACL with the combined shape set (DSC + DPC) for full validation.</p>
 <pre><code># Combined validation (recommended)
-pyshacl -s interface-schemas/dsc/shapes.ttl -s interface-schemas/dpc/shapes.ttl -df json-ld -f human ro-crate-metadata.json
+pyshacl -s dsc/shapes.ttl -s dpc/shapes.ttl -df json-ld -f human ro-crate-metadata.json
 
 # DSC-only validation (limited)
-pyshacl -s interface-schemas/dsc/shapes.ttl -df json-ld -f human ro-crate-metadata.json</code></pre>
+pyshacl -s dsc/shapes.ttl -df json-ld -f human ro-crate-metadata.json</code></pre>
 
 <h3>Minimal example</h3>
 <pre><code>{
