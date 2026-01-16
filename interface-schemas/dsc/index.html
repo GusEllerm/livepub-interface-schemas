@@ -174,13 +174,13 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
       <td><code>object</code></td>
       <td>MAY</td>
       <td><code>File</code> or <code>PropertyValue</code> (URI)</td>
-      <td>Inputs used by the step.</td>
+      <td>Inputs used by the step. At least one of <code>object</code> or <code>result</code> MUST be present (SHACL-enforced).</td>
     </tr>
     <tr>
       <td><code>result</code></td>
       <td>MAY</td>
       <td><code>File</code> or <code>PropertyValue</code> (URI)</td>
-      <td>Outputs or results produced by the step.</td>
+      <td>Outputs or results produced by the step. At least one of <code>object</code> or <code>result</code> MUST be present (SHACL-enforced).</td>
     </tr>
     <tr>
       <td><code>prov:startedAtTime</code></td>
@@ -302,6 +302,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 </table>
 
 <h3>Validated constraints vs guidance</h3>
+<p><strong>Note:</strong> This profile includes normative MUST/SHOULD requirements that are not currently enforced by the SHACL shapes. The SHACL validation lists below describe the subset of constraints that are machine-validated.</p>
 <p><strong>Validated by DSC SHACL only (<code>dsc/shapes.ttl</code>)</strong></p>
 <ul>
   <li><code>DistributedStep</code> MUST have at least one of <code>object</code> or <code>result</code>.</li>
@@ -363,7 +364,7 @@ pyshacl -s dsc/shapes.ttl -df json-ld -f human ro-crate-metadata.json</code></pr
 <h3>Minimal example</h3>
 <pre><code>{
   "@context": [
-    "contexts/v1.jsonld",
+    "https://w3id.org/livepublication/interface-schemas/dsc/contexts/v1.jsonld",
     "https://w3id.org/ro/crate/1.1/context",
     "https://w3id.org/livepublication/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
   ],
