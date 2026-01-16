@@ -5,7 +5,7 @@
   "description": "Schema and profile artifacts for LivePublication interface outputs, including vocabularies (e.g., DPC/DSC), SHACL shapes, and JSON-LD contexts for describing distributed provenance-aware workflow execution.",
   "codeRepository": "https://github.com/GusEllerm/livepub-interface-schemas",
   "license": "https://creativecommons.org/licenses/by/4.0/",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": [
     {
       "@id": "https://orcid.org/0000-0001-8260-231X",
