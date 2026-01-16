@@ -29,6 +29,12 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <a id="profile-1.0"></a>
 <h2>Distributed Step Crate Profile (DSC) — v1.0</h2>
 <p><strong>Profile identifier:</strong> <a href="https://w3id.org/livepublication/interface-schemas/dsc/index.html#profile-1.0">https://w3id.org/livepublication/interface-schemas/dsc/index.html#profile-1.0</a></p>
+<p><strong>Status:</strong> Draft (under review)</p>
+<p>
+  This profile is currently a draft specification and may change. Do not rely on it for
+  production validation without pinning to a specific release/commit. When finalised, this
+  profile will be versioned and accompanied by a tagged release and Zenodo archive.
+</p>
 
 <h3>Audience</h3>
 <p>
@@ -63,51 +69,152 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 </ul>
 
 <h3>Conformance</h3>
-<h4>Root Data Entity MUST declare conformance</h4>
-<p>
-  A conforming crate MUST declare conformance on the Root Data Entity (<code>"./"</code>) using
-  <code>schema:conformsTo</code>. Include the RO-Crate spec URI used by the crate and this DSC
-  profile URI.
-</p>
-<pre><code>{
-  "@id": "./",
-  "@type": "Dataset",
-  "conformsTo": [
-    { "@id": "https://w3id.org/ro/crate/1.1" },
-    { "@id": "https://w3id.org/livepublication/interface-schemas/dsc/index.html#profile-1.0" }
-  ],
-  "mainEntity": { "@id": "#dsc-step" }
-}</code></pre>
+<h4>Conformance summary</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Requirement</th>
+      <th>Level</th>
+      <th>Where</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Root Data Entity (<code>./</code>) declares <code>schema:conformsTo</code> with the RO-Crate spec URI and DSC profile URI</td>
+      <td>MUST</td>
+      <td>Root Data Entity</td>
+      <td>Use the RO-Crate version your crate targets (e.g., <code>https://w3id.org/ro/crate/1.1</code>).</td>
+    </tr>
+    <tr>
+      <td>Root Data Entity references a DSC step descriptor (prefer <code>mainEntity</code>)</td>
+      <td>MUST</td>
+      <td>Root Data Entity</td>
+      <td>DSC step descriptor is the primary provenance focus.</td>
+    </tr>
+    <tr>
+      <td>Profile contextual entity describing the DSC profile</td>
+      <td>SHOULD</td>
+      <td>Contextual entities</td>
+      <td>Use the profile URI as <code>@id</code>.</td>
+    </tr>
+    <tr>
+      <td>Links to terms/shapes/contexts are discoverable from this page</td>
+      <td>MUST</td>
+      <td>DSC landing page</td>
+      <td>See links at the top of this page and below.</td>
+    </tr>
+  </tbody>
+</table>
 
-<h4>Include a Profile contextual entity (recommended)</h4>
-<p>
-  A conforming crate SHOULD include a contextual entity describing this profile.
-</p>
-<pre><code>{
-  "@id": "https://w3id.org/livepublication/interface-schemas/dsc/index.html#profile-1.0",
-  "@type": "Profile",
-  "name": "Distributed Step Crate Profile (DSC) — v1.0"
-}</code></pre>
-
-<h4>Required entities and relations</h4>
-<ul>
-  <li><strong>Root Data Entity (<code>./</code>, <code>Dataset</code>):</strong> MUST reference a DSC Step Descriptor, preferably via <code>mainEntity</code>.</li>
-  <li><strong>DSC Step Descriptor entity:</strong> SHOULD be modeled as an extended <code>CreateAction</code> representing the tool execution.
-      MUST link to a <code>HowToStep</code> (via <code>step</code>) and a <code>HardwareRuntime</code> (via <code>hasPart</code>).
-      MAY link to results/outputs (via <code>result</code> and/or <code>object</code>) and to subscription/auth constraints (e.g., <code>MediaSubscription</code>).</li>
-  <li><strong><code>HowToStep</code>:</strong> SHOULD include a WMS task identifier (UUID) in <code>identifier</code> to align the step with an orchestrated workflow record.
-      MAY link to an <code>Organization</code> via <code>sourceOrganization</code>.</li>
-  <li><strong><code>HardwareRuntime</code>:</strong> MUST link to one or more <code>HardwareComponent</code> entities via <code>component</code>.</li>
-  <li><strong><code>HardwareComponent</code>:</strong> MAY link to zero or more <code>Observation</code> entities via <code>performance</code>.</li>
-  <li><strong><code>MediaSubscription</code> (optional):</strong> if present, MAY link to an <code>Organization</code> via <code>authenticator</code>.</li>
-</ul>
+<h4>Core entity requirements</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Entity / Type</th>
+      <th>Purpose</th>
+      <th>Required links / properties</th>
+      <th>Level</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Root Data Entity (<code>./</code>, <code>Dataset</code>)</td>
+      <td>Crate root that declares conformance and points to the DSC step.</td>
+      <td>
+        <ul>
+          <li><code>conformsTo</code> (RO-Crate URI + DSC profile URI)</li>
+          <li><code>mainEntity</code> linking to the DSC step descriptor</li>
+        </ul>
+      </td>
+      <td>MUST</td>
+    </tr>
+    <tr>
+      <td>DSC Step Descriptor (e.g., <code>DistributedStep</code> with <code>CreateAction</code>)</td>
+      <td>Represents the tool execution and its results.</td>
+      <td>
+        <ul>
+          <li><code>step</code> linking to a <code>HowToStep</code></li>
+          <li><code>hasPart</code> linking to a <code>HardwareRuntime</code></li>
+          <li><code>object</code> and/or <code>result</code> for inputs/outputs</li>
+        </ul>
+      </td>
+      <td>MUST (links), SHOULD (action typing)</td>
+    </tr>
+    <tr>
+      <td><code>HowToStep</code></td>
+      <td>Step identity used to align the DSC with an orchestrated workflow record.</td>
+      <td>
+        <ul>
+          <li><code>position</code> (step order)</li>
+          <li><code>identifier</code> (WMS task UUID, recommended)</li>
+          <li><code>sourceOrganization</code> (optional)</li>
+        </ul>
+      </td>
+      <td>MUST (position), SHOULD (identifier)</td>
+    </tr>
+    <tr>
+      <td><code>HardwareRuntime</code></td>
+      <td>Runtime environment snapshot for the execution.</td>
+      <td>
+        <ul>
+          <li><code>component</code> linking to one or more <code>HardwareComponent</code> entities</li>
+        </ul>
+      </td>
+      <td>MUST</td>
+    </tr>
+    <tr>
+      <td><code>HardwareComponent</code></td>
+      <td>Individual hardware elements (CPU, RAM, GPU, storage, etc.).</td>
+      <td>
+        <ul>
+          <li><code>name</code></li>
+          <li><code>performance</code> linking to <code>Observation</code> (optional)</li>
+        </ul>
+      </td>
+      <td>MUST (name), MAY (performance)</td>
+    </tr>
+    <tr>
+      <td><code>Observation</code> (performance)</td>
+      <td>Optional performance measurements for a component.</td>
+      <td>
+        <ul>
+          <li><code>observationAbout</code> linking to the component</li>
+          <li><code>measurementTechnique</code> (optional)</li>
+        </ul>
+      </td>
+      <td>MAY (if present, <code>observationAbout</code> is required)</td>
+    </tr>
+    <tr>
+      <td><code>MediaSubscription</code></td>
+      <td>Optional access conditions for gated executions.</td>
+      <td>
+        <ul>
+          <li><code>authenticator</code> linking to an <code>Organization</code> (optional)</li>
+        </ul>
+      </td>
+      <td>MAY</td>
+    </tr>
+    <tr>
+      <td><code>Organization</code></td>
+      <td>Organization used for source or authentication context.</td>
+      <td>
+        <ul>
+          <li><code>sourceOrganization</code> from <code>HowToStep</code></li>
+          <li><code>authenticator</code> from <code>MediaSubscription</code> (optional)</li>
+        </ul>
+      </td>
+      <td>MAY</td>
+    </tr>
+  </tbody>
+</table>
 
 <h3>Identifier and naming conventions</h3>
 <ul>
   <li>Use stable local <code>@id</code> values with semantic meaning (e.g., <code>#cpu-0</code>, <code>#gpu-0</code>, <code>#ram-0</code>).</li>
-  <li>For observations, prefer <code>@id</code> values that include the component id + metric + timestamp or sequence number.</li>
+  <li>For repeated observations, RECOMMENDED <code>@id</code> patterns include component id + metric + timestamp or sequence number.</li>
   <li>Example pattern: <code>#obs-cpu-0-util-2026-01-16T10:30Z</code>.</li>
-  <li>Multiple observations for the same component represent distinct measurement events; include a timestamp property when available.</li>
+  <li>Repeated observation entities represent distinct measurement events; include timestamps where available.</li>
 </ul>
 
 <h3>Validation and artifacts</h3>
@@ -115,47 +222,74 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   DSC vocabulary and validation artifacts are available as:
   <a href="terms.ttl">terms.ttl</a>,
   <a href="shapes.ttl">shapes.ttl</a>, and
-  <a href="contexts/v1.jsonld">contexts/v1.jsonld</a>.
+  <a href="contexts/v1.jsonld">contexts/v1.jsonld</a>,
+  <a href="https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld">contexts/lp-dscdpc/v1.jsonld</a>.
   SHACL shapes can validate core structural requirements for DSC crates, while some guidance
   (such as identifier patterns) is not enforceable by SHACL.
 </p>
 
 <h3>Minimal example</h3>
 <pre><code>{
-  "@id": "./",
-  "@type": "Dataset",
-  "conformsTo": [
-    { "@id": "https://w3id.org/ro/crate/1.1" },
-    { "@id": "https://w3id.org/livepublication/interface-schemas/dsc/index.html#profile-1.0" }
+  "@context": [
+    "https://w3id.org/ro/crate/1.1/context",
+    "https://w3id.org/livepublication/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
   ],
-  "mainEntity": { "@id": "#dsc-step" }
-}</code></pre>
-<pre><code>{
-  "@id": "#dsc-step",
-  "@type": ["CreateAction", "DistributedStep"],
-  "name": "Example distributed step",
-  "object": { "@id": "#input-file" },
-  "result": { "@id": "#output-file" },
-  "step": { "@id": "#wms-step-1" },
-  "hasPart": { "@id": "#runtime-1" }
-}</code></pre>
-<pre><code>{
-  "@id": "#runtime-1",
-  "@type": "HardwareRuntime",
-  "component": { "@id": "#cpu-0" }
-}</code></pre>
-<pre><code>{
-  "@id": "#cpu-0",
-  "@type": "HardwareComponent",
-  "name": "CPU",
-  "performance": { "@id": "#obs-cpu-0-util-2026-01-16T10:30Z" }
-}</code></pre>
-<pre><code>{
-  "@id": "#obs-cpu-0-util-2026-01-16T10:30Z",
-  "@type": "Observation",
-  "measurementTechnique": "example only",
-  "observationAbout": { "@id": "#cpu-0" },
-  "value": 0.42
+  "@graph": [
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "conformsTo": [
+        { "@id": "https://w3id.org/ro/crate/1.1" },
+        { "@id": "https://w3id.org/livepublication/interface-schemas/dsc/index.html#profile-1.0" }
+      ],
+      "mainEntity": { "@id": "#dsc-step" }
+    },
+    {
+      "@id": "#dsc-step",
+      "@type": ["CreateAction", "DistributedStep"],
+      "name": "Example distributed step",
+      "object": { "@id": "#input-file" },
+      "result": { "@id": "#output-file" },
+      "step": { "@id": "#wms-step-1" },
+      "hasPart": { "@id": "#runtime-1" }
+    },
+    {
+      "@id": "#wms-step-1",
+      "@type": "HowToStep",
+      "position": 1,
+      "identifier": "b6f9f35e-8ee0-4b3a-a264-2e51a85d0c1e"
+    },
+    {
+      "@id": "#runtime-1",
+      "@type": "HardwareRuntime",
+      "component": { "@id": "#cpu-0" }
+    },
+    {
+      "@id": "#cpu-0",
+      "@type": "HardwareComponent",
+      "name": "CPU",
+      "performance": { "@id": "#obs-cpu-0-util-2026-01-16T10:30Z" }
+    },
+    {
+      "@id": "#obs-cpu-0-util-2026-01-16T10:30Z",
+      "@type": "Observation",
+      "measurementTechnique": "example only",
+      "observationAbout": { "@id": "#cpu-0" },
+      "value": 0.42
+    },
+    {
+      "@id": "#input-file",
+      "@type": "File",
+      "name": "Input file",
+      "encodingFormat": "text/plain"
+    },
+    {
+      "@id": "#output-file",
+      "@type": "File",
+      "name": "Output file",
+      "encodingFormat": "text/plain"
+    }
+  ]
 }</code></pre>
 
 <h3>Notes</h3>
