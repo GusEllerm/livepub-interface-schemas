@@ -24,9 +24,9 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <p>This page documents the DSC vocabulary and related artifacts.</p>
 <p><strong>Profile:</strong> <a href="#profile-1.0">DSC Profile v1.0</a></p>
 <ul>
-  <li><a href="https://livepublication.org/interface-schemas/dsc/terms.ttl">Vocabulary (Turtle)</a></li>
-  <li><a href="https://livepublication.org/interface-schemas/dsc/shapes.ttl">SHACL Shapes</a></li>
-  <li><a href="https://livepublication.org/interface-schemas/dsc/contexts/v1.jsonld">JSON-LD Context v1</a></li>
+  <li><a href="https://w3id.org/livepublication/interface-schemas/dsc/terms.ttl">Vocabulary (Turtle)</a></li>
+  <li><a href="https://w3id.org/livepublication/interface-schemas/dsc/shapes.ttl">SHACL Shapes</a></li>
+  <li><a href="https://w3id.org/livepublication/interface-schemas/dsc/contexts/v1.jsonld">JSON-LD Context v1</a></li>
 </ul>
 
 <hr>
@@ -40,13 +40,13 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   production validation without pinning to a specific release/commit. When finalised, this
   profile will be versioned and accompanied by a tagged release and Zenodo archive.
 </p>
-<p><strong>Stabilisation plan</strong></p>
+<!-- <p><strong>Stabilisation plan</strong></p>
 <ul>
   <li>Finalise core requirements and align with validated examples.</li>
   <li>Tag a repository release for the profile and contexts.</li>
   <li>Archive the release via Zenodo.</li>
   <li>Update canonical DSC examples to declare <code>conformsTo</code> for this profile.</li>
-</ul>
+</ul> -->
 <p><strong>Conformance declaration:</strong> Conforming DSC crates MUST declare <code>conformsTo</code> on the Root Data Entity (<code>"./"</code>) including this profile URI.</p>
 <p>In JSON-LD, <code>conformsTo</code> expands to <code>schema:conformsTo</code> using the DSC context; this page uses the compact <code>conformsTo</code> form for readability.</p>
 <p>This is declared in <code>ro-crate-metadata.json</code> on the entity with <code>@id</code> <code>"./"</code>.</p>
@@ -79,7 +79,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <h3>Packaging guidance: Bundled vs Distributed</h3>
 <ul>
   <li><strong>Distributed (recommended):</strong> one DSC per step/task, suited to Globus Compute and other distributed jobs.</li>
-  <li><strong>Bundled:</strong> a single crate containing multiple step descriptions, used less often.</li>
+  <li><strong>Bundled:</strong> a single crate containing multiple step descriptions. This is currently in concept phase and is primarily concerned with reducing overhead of provenance in the system at runtime.</li>
   <li>LivePublication recommends distributed per-step crates, later compiled or linked into a parent workflow crate.</li>
 </ul>
 
@@ -96,7 +96,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   </thead>
   <tbody>
     <tr>
-      <td>Root Data Entity (<code>./</code>) declares <code>conformsTo</code> (expands to <code>schema:conformsTo</code> under the DSC JSON-LD context) with the RO-Crate spec URI and DSC profile URI</td>
+      <td>Root Data Entity (<code>./</code>) declares <code>conformsTo</code> with the RO-Crate spec URI and DSC profile URI</td>
       <td>MUST</td>
       <td>Root Data Entity</td>
       <td>Use the RO-Crate version your crate targets (e.g., <code>https://w3id.org/ro/crate/1.1</code>).</td>
@@ -346,10 +346,10 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <h3>Validation and artifacts</h3>
 <p>
   DSC vocabulary and validation artifacts are available as:
-  <a href="https://livepublication.org/interface-schemas/dsc/terms.ttl">terms.ttl</a>,
-  <a href="https://livepublication.org/interface-schemas/dsc/shapes.ttl">shapes.ttl</a>, and
-  <a href="https://livepublication.org/interface-schemas/dsc/contexts/v1.jsonld">contexts/v1.jsonld</a>,
-  <a href="https://livepublication.org/interface-schemas/contexts/lp-dscdpc/v1.jsonld">contexts/lp-dscdpc/v1.jsonld</a>.
+  <a href="https://w3id.org/livepublication/interface-schemas/dsc/terms.ttl">terms.ttl</a>,
+  <a href="https://w3id.org/livepublication/interface-schemas/dsc/shapes.ttl">shapes.ttl</a>, and
+  <a href="https://w3id.org/livepublication/interface-schemas/contexts/v1.jsonld">contexts/v1.jsonld</a>,
+  <a href="https://w3id.org/livepublication/interface-schemas/contexts/lp-dscdpc/v1.jsonld">contexts/lp-dscdpc/v1.jsonld</a>.
   SHACL shapes can validate core structural requirements for DSC crates, while some guidance
   (such as identifier patterns) is not enforceable by SHACL.
 </p>
