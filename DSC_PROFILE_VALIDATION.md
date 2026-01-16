@@ -1,6 +1,6 @@
 # DSC Profile Validation Report
 
-Version and timestamp: 2026-01-16T07:16:32Z
+Version and timestamp: 2026-01-16T07:33:54Z
 
 ## Files validated
 - `interface-schemas/dsc/index.html`
@@ -32,6 +32,10 @@ Key properties/types used in tables, normative statements, and examples:
 - `MediaSubscription`, `authenticator`: ⚠️ not found in DSC/DPC shapes or contexts; retained as guidance only
 - `Profile` contextual entity: ⚠️ not defined in DSC/DPC artifacts; mentioned as guidance
 
+Validated constraints are split by shape set:
+- DSC-only (`interface-schemas/dsc/shapes.ttl`): `DistributedStep` must have `object` or `result`, must link to `HardwareRuntime` via `hasPart`, `HowToStep.position` is required and integer, optional `prov:startedAtTime`/`prov:endedAtTime` must be `xsd:dateTime` if present.
+- Combined DSC + DPC (`interface-schemas/dsc/shapes.ttl` + `interface-schemas/dpc/shapes.ttl`): `HardwareRuntime.component` required, `HardwareComponent.name` required, `Observation.observationAbout` required if observation present.
+
 ### 3) Thesis correction: WMS task UUID placement
 - Text requirements: ✅ UUID stored in `HowToStep.identifier`
 - Tables: ✅ `position` reserved for integer order; `identifier` used for WMS UUID
@@ -51,8 +55,9 @@ Key properties/types used in tables, normative statements, and examples:
 - Updated WMS task UUID guidance to use `HowToStep.identifier`, adjusted tables and example.
 - Added recommended typing subsection and expanded step descriptor types in the example.
 - Added `contexts/v1.jsonld` to the example `@context`.
-- Added a "validated vs guidance" section to clarify SHACL enforcement.
+- Added a "validated vs guidance" section split into DSC-only vs DSC+DPC constraints.
 - Added a prominent conformance declaration callout near the top.
+- Added a "How to validate a DSC crate" recipe with combined and DSC-only commands.
 
 ## Open questions / remaining risks
 - `MediaSubscription`/`authenticator` are not defined in the DSC/DPC artifacts; consider adding to contexts/shapes or treating as out-of-scope.

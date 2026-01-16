@@ -219,15 +219,18 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 </table>
 
 <h3>Validated constraints vs guidance</h3>
-<p><strong>SHACL-validated constraints (machine-validated)</strong></p>
+<p><strong>Validated by DSC SHACL only (<code>dsc/shapes.ttl</code>)</strong></p>
 <ul>
   <li><code>DistributedStep</code> MUST have at least one of <code>object</code> or <code>result</code>.</li>
   <li><code>DistributedStep</code> MUST link to <code>HardwareRuntime</code> via <code>hasPart</code>.</li>
   <li><code>HowToStep</code> MUST have <code>position</code> (integer).</li>
+  <li>If present, <code>prov:startedAtTime</code> and <code>prov:endedAtTime</code> MUST be <code>xsd:dateTime</code>.</li>
+</ul>
+<p><strong>Validated when combining DSC + DPC SHACL (recommended)</strong></p>
+<ul>
   <li><code>HardwareRuntime</code> MUST link to one or more <code>HardwareComponent</code> via <code>component</code>.</li>
   <li><code>HardwareComponent</code> MUST have <code>name</code>.</li>
   <li><code>Observation</code> MUST link to the component via <code>observationAbout</code> if present.</li>
-  <li>If present, <code>prov:startedAtTime</code> and <code>prov:endedAtTime</code> MUST be <code>xsd:dateTime</code>.</li>
 </ul>
 <p><strong>Project conventions (guidance; not fully machine-validated)</strong></p>
 <ul>
@@ -236,6 +239,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   <li>Use stable local <code>@id</code> patterns for components and observations (see naming guidance below).</li>
   <li>Prefer distributed per-step DSC crates, later linked into a parent workflow crate.</li>
   <li>Include a Profile contextual entity for this profile URI when possible.</li>
+  <li>Schema.org optional entities such as <code>MediaSubscription</code> and <code>Organization</code> are not currently constrained by SHACL shapes.</li>
 </ul>
 
 <h3>Identifier and naming conventions</h3>
@@ -264,6 +268,14 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   SHACL shapes can validate core structural requirements for DSC crates, while some guidance
   (such as identifier patterns) is not enforceable by SHACL.
 </p>
+
+<h3>How to validate a DSC crate</h3>
+<p>Use SHACL with the combined shape set (DSC + DPC) for full validation.</p>
+<pre><code># Combined validation (recommended)
+pyshacl -s interface-schemas/dsc/shapes.ttl -s interface-schemas/dpc/shapes.ttl -df json-ld -f human ro-crate-metadata.json
+
+# DSC-only validation (limited)
+pyshacl -s interface-schemas/dsc/shapes.ttl -df json-ld -f human ro-crate-metadata.json</code></pre>
 
 <h3>Minimal example</h3>
 <pre><code>{
