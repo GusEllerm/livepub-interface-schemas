@@ -35,6 +35,13 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   production validation without pinning to a specific release/commit. When finalised, this
   profile will be versioned and accompanied by a tagged release and Zenodo archive.
 </p>
+<p><strong>Stabilisation plan</strong></p>
+<ul>
+  <li>Finalise core requirements and align with validated examples.</li>
+  <li>Tag a repository release for the profile and contexts.</li>
+  <li>Archive the release via Zenodo.</li>
+  <li>Update canonical DSC examples to declare <code>conformsTo</code> for this profile.</li>
+</ul>
 
 <h3>Audience</h3>
 <p>
@@ -146,12 +153,12 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
       <td>Step identity used to align the DSC with an orchestrated workflow record.</td>
       <td>
         <ul>
-          <li><code>position</code> (step order)</li>
-          <li><code>identifier</code> (WMS task UUID, recommended)</li>
+          <li><code>position</code> (step order; used here for the WMS task UUID alignment)</li>
+          <li><code>identifier</code> (optional alternative for WMS task UUID)</li>
           <li><code>sourceOrganization</code> (optional)</li>
         </ul>
       </td>
-      <td>MUST (position), SHOULD (identifier)</td>
+      <td>MUST (position), MAY (identifier)</td>
     </tr>
     <tr>
       <td><code>HardwareRuntime</code></td>
@@ -217,6 +224,14 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   <li>Repeated observation entities represent distinct measurement events; include timestamps where available.</li>
 </ul>
 
+<h3>Recommended typing (project conventions)</h3>
+<p>
+  The DSC step descriptor SHOULD include schema.org action and workflow-related types used in
+  this project: <code>CreateAction</code>, <code>HowTo</code>, <code>File</code>, <code>Schedule</code>,
+  and <code>ActionAccessSpecification</code>, alongside <code>DistributedStep</code>. These are
+  conventions in the examples and are not enforced by the DSC SHACL shapes.
+</p>
+
 <h3>Validation and artifacts</h3>
 <p>
   DSC vocabulary and validation artifacts are available as:
@@ -231,6 +246,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
 <h3>Minimal example</h3>
 <pre><code>{
   "@context": [
+    "contexts/v1.jsonld",
     "https://w3id.org/ro/crate/1.1/context",
     "https://w3id.org/livepublication/interface-schemas/contexts/lp-dscdpc/v1.jsonld"
   ],
@@ -246,7 +262,14 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
     },
     {
       "@id": "#dsc-step",
-      "@type": ["CreateAction", "DistributedStep"],
+      "@type": [
+        "CreateAction",
+        "HowTo",
+        "File",
+        "Schedule",
+        "ActionAccessSpecification",
+        "DistributedStep"
+      ],
       "name": "Example distributed step",
       "object": { "@id": "#input-file" },
       "result": { "@id": "#output-file" },
@@ -256,8 +279,7 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
     {
       "@id": "#wms-step-1",
       "@type": "HowToStep",
-      "position": 1,
-      "identifier": "b6f9f35e-8ee0-4b3a-a264-2e51a85d0c1e"
+      "position": "b6f9f35e-8ee0-4b3a-a264-2e51a85d0c1e"
     },
     {
       "@id": "#runtime-1",
@@ -299,6 +321,12 @@ footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; color:
   step entity to be typed as <code>CreateAction</code> or <code>HowTo</code>. The profile recommends
   those schema.org action types to preserve the thesis intent of modeling an explicit tool
   execution.
+</p>
+<p>
+  The thesis places the WMS task UUID in <code>HowToStep.position</code> for step alignment. The
+  current DSC SHACL shapes define <code>position</code> as an integer and allow a string
+  <code>identifier</code>; implementations needing strict datatype validation may use
+  <code>identifier</code> in addition to <code>position</code> until the shapes are aligned.
 </p>
 
 <h3>How to cite / archive</h3>
