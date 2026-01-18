@@ -8,7 +8,7 @@ authors:
 repository-code: "https://github.com/GusEllerm/livepub-interface-schemas"
 abstract: "LivePublication interface schemas defining DPC/DSC vocabularies, SHACL shapes, and JSON-LD contexts for distributed provenance-aware workflow execution."
 license: "CC-BY-4.0"
-version: "0.1.1"
+version: "0.1.2"
 preferred-citation:
   type: "software"
   title: "LivePublication Interface Schemas"

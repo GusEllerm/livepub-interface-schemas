@@ -47,7 +47,7 @@
                 "@id": "#livepublication-interface-schemas"
             },
             "name": "LivePublication Interface Schemas",
-            "version": "0.1.1"
+            "version": "0.1.2"
         },
         {
             "@id": "ro-crate-metadata.json",
